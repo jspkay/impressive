@@ -1,0 +1,3 @@
+[submodule "panzoom"]
+	path = panzoom
+	url = https://github.com/anvaka/panzoom.git
