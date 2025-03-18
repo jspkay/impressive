@@ -220,59 +220,149 @@ class Mouse{
 
 })(document, window);
 
+
+function round(x, m){
+  let r = x / m;
+  return Math.round(r) * m;
+}
+var M = 32;
+var rootId = "scene";
+
+class Element{
+  constructor(element){
+    if(this.constructor == Element){
+      throw new Error("Abstract class cannot be instantiated!");
+    }
+    this.element = element;
+    this.x = Number(element.dataset.x);
+    this.y = Number(element.dataset.y);
+    this.tooSmall = false; // Does this stay ?
+  }
+  setPosition(x, y){
+    this.element.style.transform = `translate(${x}px, ${y}px)`;
+    x = round(x, M); // Compute position 
+    y = round(y, M);
+    this.x = x;
+    this.y = y;
+  }
+  getProperties(){
+    return {
+      x: this.x, y: this.y,
+    }
+  }
+  destroy(){
+    this.element.remove();
+    delete this.element;
+  }
+}
+
+class Container extends Element{
+  constructor(element){
+    super(element)
+  }
+  static create(x, y){
+    let element = document.createElement("div"); // creating container
+    element.classList.add("container"); // appropriate style
+    element.style.position = "absolute"; // prevents overlapping
+    x = round(x, M); // Compute position 
+    y = round(y, M);
+    element.dataset.x = x; // position is redundant, for easy retrival
+    element.dataset.y = y;
+    element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
+    document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
+    return new Container(element);
+  }
+  static fromElement(element){
+    let x = Number(element.dataset.x);
+    let y = Number(element.dataset.y);
+    return new Container(x, y, element);
+  }
+  setSize(w, h){
+    this.element.style.height = `${h}px`;
+    this.element.style.width = `${w}px`;
+  }
+  setSizeFromPos(px, py){
+    let w = px - this.x;
+    let h = py - this.y;
+    this.tooSmall = h < M || w < M;
+    w = round(w, M);
+    h = round(h, M);
+    this.setSize(w,h);
+  }
+  setFillColor(color){
+    this.element.style.backgroundColor = color;
+  }
+  setBorderColor(color){
+    this.element.style.borderColor = color;
+  }
+  setBorderThickness(t){
+    this.element.style.borderWidth = `${t}px`;
+    this.element.style.borderStyle = "solid";
+  }
+  setBorderRadius(r){
+    this.element.style.borderRadius = `${r}px`;
+  }
+  getProperties(){
+    let element = this.element;
+    return Object.assign(
+      {},
+      super.getProperties(), 
+      {
+        height: Number( element.style.height.replace("px", "") ),
+        width: Number( element.style.width.replace("px", "") ),
+        fillColor: element.style.backgroundColor,
+        borderColor: element.style.borderColor,
+        borderThickness: element.style.borderThickness,
+        borderRadius: Number( element.style.borderRadius.replace("px", "") ),
+      }
+    )
+  }
+  finish(){
+    if( this.tooSmall )
+      this.destroy()
+  }
+}
+
+class PropertyWindow extends Container{
+  constructor(element){
+    super(element)
+    this.activeElement = null; // TODO: correctly set this activeElement
+  }
+  static create(x, y){
+    let element = document.createElement("div"); // creating container
+    element.classList.add("property-window"); // appropriate style
+    element.style.position = "absolute"; // prevents overlapping
+    x = round(x, M); // Compute position 
+    y = round(y, M);
+    element.dataset.x = x; // position is redundant, for easy retrival
+    element.dataset.y = y;
+    element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
+    document.querySelector(`body`).appendChild(element); // put it on the display
+    return new PropertyWindow(element);
+  }
+  displayProperties(properties){
+    for(let key in properties){
+      let prop = document.createElement("div");
+      let label = document.createElement("label");
+      let value = document.createElement("input")
+      value.type = "text";
+
+      prop.appendChild(label);
+      prop.appendChild(value);
+
+      label.innerText = key;
+      value.value = properties[key];
+      this.element.appendChild(prop);
+    }
+  }
+  // TODO: make an eventListener for the change on each prop, so that we apply
+  // the change to this.activeElement
+}
+
 (function(document, window){
   "use strict";
 
   var ContainerTool = function(rootId){
-
-    function round(x, m){
-      let r = x / m;
-      return Math.round(r) * m;
-    }
-    var M = 32;
-
-    class Container{
-      constructor(x, y){
-        x = round(x, M);
-        y = round(y, M)
-        let container = document.createElement("div");
-        container.classList.add("container");
-        container.style.position = "absolute"; // prevents overlapping
-        console.log(rootId);
-        document.querySelector(`#${rootId}`).appendChild(container);
-        this.container = container;
-        this.x = x;
-        this.y = y;
-        this.tooSmall = false;
-        container.style.transform = `translate(${x}px, ${y}px)`;
-        console.log(`creating container at pos ${x} - ${y}`);
-      }
-      setPosition(x, y){
-        this.container.style.transform = `translate(${x}px, ${y}px)`;
-        this.x = x;
-        this.y = y;
-      }
-      setSize(w, h){
-        this.container.style.height = `${h}px`;
-        this.container.style.width = `${w}px`;
-      }
-      setSizeFromPos(px, py){
-        let w = px - this.x;
-        let h = py - this.y;
-        this.tooSmall = h < 0 || w < 0;
-        w = round(w, M);
-        h = round(h, M);
-        this.setSize(w,h);
-      }
-      finish(){
-        if( this.tooSmall )
-          this.destroy()
-      }
-      destroy(){
-        this.container.remove();
-        delete this.container;
-      }
-    }
 
     var eventListeners = {}
     var active = null;
@@ -285,7 +375,8 @@ class Mouse{
 
       f = (e) => {
         mouse.mouseDown(e);
-        active = new Container(mouse.clickStarted[0], mouse.clickStarted[1]);
+        active = Container.create(mouse.clickStarted[0], mouse.clickStarted[1]);
+        active.tooSmall = true;
       };
       document.addEventListener("mousedown", f);
       eventListeners["mousedown"] = f;
