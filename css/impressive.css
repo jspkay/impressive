@@ -4,3 +4,50 @@ div.property-window{
   height: 600px;
   width: 300px;
 }
+
+div#overlay{
+  position: fixed;
+  height: 100%;
+  width: 100%;
+}
+div#toolbar { 
+  top: 0;
+  padding: 0.5rem;
+  height: 2.5rem;
+  width: 100%;
+  z-index: 1000;
+  background: magenta;
+  display: flex;
+  flex-direction: row;
+}
+
+div#stepList{
+  height: 100%;
+  padding-top: 3.5rem;
+  position: relative;
+  z-index: -1;
+  top: -3.5rem;
+  width: 100px;
+  overflow: scroll;
+  background: cyan;
+}
+
+div.step {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  background: red;
+}
+
+div#addStep {
+  height: 100px;
+  width:100%;
+}
+div#addStep > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hidden {
+  display: None;
+}
