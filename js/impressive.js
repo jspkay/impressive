@@ -5,7 +5,18 @@ const Modes = {
   PRESENTATION: 1,
 };
 
-// DOM Management 
+// Main setup:
+//  - 
+//
+// Components:
+//  - step manager: adds and removes steps 
+//  - transition manager: adds, modify and removes transitions 
+//  - tool manager: decides how the mouse interacts with the canvas 
+//  - presenter: this component moves things around, also during the actual presentation 
+//
+//  Other than components there are the managers(?)
+
+// Main setup
 (function(document, window){ 
   console.log("Started");
 
@@ -19,7 +30,6 @@ const Modes = {
     var init = function(){
 
       tools = initTools(rootId);
-  
 
       var activeTool = tools.ContainerTool;
       activeTool.init();
@@ -105,7 +115,9 @@ const Modes = {
 })(document, window);
 
 class StepManager {
+  // This object manages the steps of our presentation 
   constructor(){
+    this.stepCount = 0;
     this.root = document.querySelector("#stepList");
     this.last = document.querySelector("#addStep");
     let addButton = document.querySelector("#addStep");
@@ -123,6 +135,10 @@ class StepManager {
   }
   createStep(pos){
     let step = document.createElement("div");
+
+    step.innerHTML = String(this.stepCount);
+    this.stepCount++;
+
     step.classList.add("step");
     step.dataset.x = pos[0];
     step.dataset.y = pos[1];
@@ -130,7 +146,6 @@ class StepManager {
     step.addEventListener(
       "click", 
       (e) => {
-        console.log(e.target);
         let el = e.target;
         let scene = new Canvas();
 
@@ -138,7 +153,12 @@ class StepManager {
         let y = el.dataset.y;
         let scale = el.dataset.scale;
 
+        scene.transition(true);
         scene.move(x, y, scale);
+        setTimeout(() => {
+          let scene = new Canvas();
+          scene.transition(false)
+        }, 300);
       }
     )
     this.last.insertAdjacentElement("beforebegin", step);
@@ -195,6 +215,82 @@ class Mouse{
       this.upHandlers[idx](e);
   }
 }
+
+// This class takes care of import and export of files 
+class FileManager{
+  constructor(){}
+  static getChildren(element){
+    if( element.children.lenght == 0 ){
+      return [];
+    }
+
+    let res = [];
+    for(let child of element.children){
+      res.push({
+        type: child.tagName, 
+        x: child.dataset.x, 
+        y: child.dataset.y,
+        children: this.getChildren(child),
+      })
+    }
+
+    return res;
+  }
+  static exportFile(){
+    // This function makes a json of the whole presentation. 
+    // It contains a list of steps which relate the space 
+    // movement in time. On top of this, the animations are 
+    // encoded with each step.
+    // Finally, the elements of the canvas are all laid out together
+    // to make a canvas which exists outside of the steps.
+
+    let exported = {
+      version: "alpha",
+      stepList: null,
+      elementList: null,
+    }
+
+    // gather all the steps 
+    let stepList = new Array();
+    for(let step of document.querySelectorAll("#step")){
+      let x = step.dataset.x;
+      let y = step.dataset.y;
+      let scale = step.dataset.scale;
+      stepList.push({
+        x: x, y: y, scale: scale,
+      });
+    }
+    exported.stepList = stepList;
+
+    // gather all the elements on the canvas 
+    let elementList = this.getChildren( document.querySelector("#scene") );
+    exported.elementList = elementList;
+    
+    console.log(exported);
+    let jsonString = JSON.stringify(exported);
+    console.log(jsonString);
+    let blob = new Blob(
+      [ jsonString ],
+      {type: "application/json"}
+    );
+    let url = URL.createObjectURL(
+      blob
+    );
+
+    // return;
+    let link = document.createElement("a");
+    link.href = url;
+    link.download = "document.json";
+    link.click();
+
+    console.log(blob);
+    console.log(url);
+  } 
+  static importFile(){
+    let importElement = document.createElement("input");
+  }
+}
+
 
 (function(document, window){
   "use strict";
@@ -296,6 +392,13 @@ class Canvas{
     this.element.style.transform = str; 
     console.log(str)
   }
+  transition(set){
+    if(set){
+      self.element.style.transition = "all 0.3s linear";
+    }else{
+      self.element.style.transition = "";
+    }
+  }
 }
 
 function round(x, m){
@@ -327,12 +430,17 @@ class Element{
       x: this.x, y: this.y,
     }
   }
+  getPosition(){
+    return [this.x, this.y]
+  }
   destroy(){
     this.element.remove();
     delete this.element;
   }
   _setPosition(x, y){
     this.element.style.transform = `translate(${x}px, ${y}px)`;
+    this.element.dataset.x = x;
+    this.element.dataset.y = y;
     this.x = x;
     this.y = y;
   }
@@ -407,10 +515,78 @@ class Container extends Element{
       }
     )
   }
+  getHeight(){
+    return Number( this.element.style.height.replace("px", "") );
+  }
+  getWidth(){
+    return Number( this.element.style.width.replace("px", "") );
+  }
   finish(){
     if( this.tooSmall )
       this.destroy()
   }
+}
+
+class Window extends Container{
+  static create(x, y){
+
+    // Create the window itself 
+    let element = document.createElement("div"); // creating container
+    element.classList.add("window"); // appropriate style
+    element.style.position = "fixed"; // prevents overlapping
+    element.dataset.x = x; // position is redundant, for easy retrival
+    element.dataset.y = y;
+    element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
+    document.querySelector(`#overlay`).appendChild(element); // put it on the display
+
+    // Create the draggable element 
+    let de = document.createElement("div");
+    de.classList.add("draggable");
+    element.append(de);
+    setDraggable(element, de);
+
+    return new Window(element);
+  }
+  setPosition(x, y){
+    if(x<0) x = 0; 
+    if(x+this.width > window.innerWidth) x = window.innerWidth-this.width;
+    if(y<0) y = 0;
+    if(x+this.height > window.innerHeight) y = window.innerHeight-this.height;
+    super.setPosition(x, y);
+  }
+}
+
+function setDraggable(draggable, trigger){
+  let active = null;
+  let mouse = new Mouse();
+  let initialPos = [];
+
+  trigger.addEventListener(
+    "mousedown",
+    (e) => {
+      mouse.mouseDown(e);
+      active = new Window(draggable);
+      initialPos  = active.getPosition();
+    }
+  );
+  document.addEventListener(
+    "mousemove",
+    (e) => {
+      mouse.mouseMove(e);
+      if(mouse.clicking){
+        let dx = mouse.currentCoord[0] - mouse.clickStarted[0]; 
+        let dy = mouse.currentCoord[1] - mouse.clickStarted[1];
+        active.setPosition( initialPos[0] + dx , initialPos[1] + dy )
+      }
+    }
+  );
+  document.addEventListener(
+    "mouseup", 
+    (e) => {
+      mouse.mouseUp(e);
+      active = null;
+    }
+  );
 }
 
 class PropertyWindow extends Container{
@@ -473,7 +649,7 @@ class PropertyWindow extends Container{
       f = (e) => {
         mouse.mouseMove(e);
         if(mouse.clicking) active.setSizeFromPos(mouse.currentCoord[0], mouse.currentCoord[1]);
-        console.log(e);
+      //  console.log(e);
       };
       document.addEventListener("mousemove", f);
       eventListeners["mouseup"] = f;
