@@ -5,6 +5,21 @@ const Modes = {
   PRESENTATION: 1,
 };
 
+// The first thing we need is robust apis that work without user interactions 
+// so that we can build on them.
+// Specifically we need:
+// - two modes: presentation and edit
+// - a way to move the slides around (really the avilable space)
+// - a way to insert new elements 
+// - a way to save a presentation to a file 
+// - a way to load a presentation from a file
+//
+// the two modes should be able to be switched from point to point so that 
+// the user will be able to either edit or present. 
+//
+// On top of that, it will be necessary to introduce ui/ux elements, which 
+// will presumably come with new compontents.
+
 // Main setup:
 //  - 
 //
@@ -24,6 +39,7 @@ const Modes = {
 
     var tools;
     var activeMode = Modes.EDITOR;
+    var modeObject = null;
 
     var sm = new StepManager();
 
@@ -69,7 +85,7 @@ const Modes = {
 
     function switchMode(mode){
       if(mode == Modes.PRESENTATION){
-        document.querySelector("#overlay").classList.add("hidden");
+        modeObject = new PresentationMode();
       }
       if(mode == Modes.EDITOR){
 
@@ -114,10 +130,27 @@ const Modes = {
 
 })(document, window);
 
+
+class PresentationMode{
+  constructor(){
+    document.querySelector("#overlay").classList.add("hidden");
+    document.addEventListener("keydown", this.handleKeys);
+  }
+
+  handleKeys(e){
+    console.log(e);
+
+  }
+
+}
+
 class StepManager {
   // This object manages the steps of our presentation 
   constructor(){
+    // logic handling 
+    this.currentStep = null;
     this.stepCount = 0;
+    // UI updates
     this.root = document.querySelector("#stepList");
     this.last = document.querySelector("#addStep");
     let addButton = document.querySelector("#addStep");
@@ -163,6 +196,24 @@ class StepManager {
     )
     this.last.insertAdjacentElement("beforebegin", step);
     console.log(pos);
+  }
+  goto(step){
+    // step is the index of the step we need 
+    steps = document.querySelectorAll(".step");
+    if( step >= steps.length ){
+      alert("This step does not exsits.")
+      return
+    }
+    wanted = steps[step];
+    this.transition(wanted.dataset.x, wanted.dataset.y, wanted.dataset.scale);
+  }
+  transition(x, y, scale){
+    scene.transition(true);
+    scene.move(x, y, scale);
+    setTimeout(() => {
+      let scene = new Canvas();
+      scene.transition(false);
+    }, 300);
   }
 }
 
