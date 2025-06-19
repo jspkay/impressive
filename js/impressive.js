@@ -1,5 +1,11 @@
 "use strict";
 
+import * as logging from "./logging.js"
+console.log(logging)
+logging.setLevel( logging.levels.DEBUG )
+
+logging.debug("Starting stuff...")
+
 const Modes = {
   EDITOR: 0,
   PRESENTATION: 1,
@@ -20,82 +26,108 @@ const Modes = {
 // On top of that, it will be necessary to introduce ui/ux elements, which 
 // will presumably come with new compontents.
 
-// Main setup:
-//  - 
-//
-// Components:
-//  - step manager: adds and removes steps 
-//  - transition manager: adds, modify and removes transitions 
-//  - tool manager: decides how the mouse interacts with the canvas 
-//  - presenter: this component moves things around, also during the actual presentation 
-//
-//  Other than components there are the managers(?)
+// The class Canvas is responsible to move the slides around
+// It has to be constructed and then the method move(x, y, scale)
+// is available. 
+// Also, it is possible to make set a smooth transition via the method transition
+
+// main components 
+import {PropertyWindow, Container} from "./elements.js"
+import {StepManager} from "./step_manager.js"
+import {TransitionManager} from "./transition_manager.js"
+
+// tools 
+import {RectangleTool} from "./tools.js"
+
+class Canvas{
+  constructor(){
+   this.element = document.querySelector("#scene");
+   this.dataset = this.element.dataset;
+  }
+  move(x, y, scale){
+    let str = `translate(${x}px,${y}px) scale(${scale})`;
+    this.element.style.transform = str; 
+    console.log(str)
+  }
+  transition(smooth){
+    if(smooth){
+      this.element.style.transition = "all 0.3s linear";
+    }else{
+      this.element.style.transition = "";
+    }
+  }
+}
+
+function switchMode(mode){
+  if(mode == Modes.PRESENTATION){
+    modeObject = new PresentationMode();
+  }
+  if(mode == Modes.EDITOR){
+
+  }
+}
 
 // Main setup
-(function(document, window){ 
-  console.log("Started");
+logging.debug("Setting up impressive...");
 
-  var impressive = window.impressive = function(rootId){
 
-    var tools;
-    var activeMode = Modes.EDITOR;
-    var modeObject = null;
+export var impressive = function(rootId){
 
-    var sm = new StepManager();
+  var tools;
+  var activeMode = Modes.EDITOR;
+  var modeObject = null;
+  var root = rootId;
 
-    var init = function(){
+  var sm = new StepManager();
 
-      tools = initTools(rootId);
+  var init = function(){
 
-      var activeTool = tools.ContainerTool;
-      activeTool.init();
+    tools = initTools(rootId);
 
-      // all the tools take a function
-      document.querySelectorAll(".tool").forEach( (element) =>{ 
-        element.addEventListener("click", (e) => {
-          // event is triggered
-          let s = e.target;
-          while( ! s.classList.contains("tool") ){ 
-            // we "bubble" up till we find a proper tool
-            s = s.parentElement;
-          }
+    logging.debug(tools);
 
-          switch(s.id){
-            case "moveTool":
-              activeTool.destroy();
-              activeTool = tools.MoveTool;
-            break;
-            case "selectTool":
-              activeTool.destroy();
-              activeTool = new SelectTool();
-            break;
-            case "containerTool":
-              activeTool.destroy();
-              activeTool = tools.ContainerTool;
-            break;
-            case "presentTool":
-              activeMode = Modes.PRESENTATION;
-              switchMode(activeMode);
-          }
-          activeTool.init();
+    var activeTool = tools.ContainerTool;
+    // activeTool.init();
 
-        })
+    // all the tools take a function
+    document.querySelectorAll(".tool").forEach( (element) =>{ 
+      element.addEventListener("click", (e) => {
+        // event is triggered
+        let s = e.target;
+        while( ! s.classList.contains("tool") ){ 
+          // we "bubble" up till we find a proper tool
+          s = s.parentElement;
+        }
+
+        switch(s.id){
+          case "moveTool":
+            activeTool.destroy();
+            activeTool = tools.MoveTool;
+          break;
+          case "selectTool":
+            activeTool.destroy();
+            activeTool = new SelectTool();
+          break;
+          case "containerTool":
+            activeTool.destroy();
+            activeTool = tools.ContainerTool;
+          break;
+          case "presentTool":
+            activeMode = Modes.PRESENTATION;
+            switchMode(activeMode);
+        }
+        activeTool.init();
+
       })
-    }
-
-    function switchMode(mode){
-      if(mode == Modes.PRESENTATION){
-        modeObject = new PresentationMode();
-      }
-      if(mode == Modes.EDITOR){
-
-      }
-    }
-
-    return ({
-      init: init,
-    });
+    })
   }
+
+
+  return ({
+    init: init,
+  });
+}
+
 
 // ADD and INIT LIBRARIES
 // Library factories are defined in src/lib/*.js, and register themselves by calling
@@ -104,32 +136,33 @@ const Modes = {
 // See src/lib/README.md for clearer example.
 // (Advanced usage: For different values of rootId, a different instance of the libaries are
 // generated, in case they need to hold different state for different root elements.)
-  var toolFactories = {};
-  impressive.addToolFactory = function( obj ) {
-      for ( var toolname in obj ) {
-          if ( obj.hasOwnProperty( toolname ) ) {
-              toolFactories[ toolname ] = obj[ toolname ];
-          }
-      }
-  };
+var toolFactories = {};
+impressive.addToolFactory = function( obj ) {
+    for ( var toolname in obj ) {
+        if ( obj.hasOwnProperty( toolname ) ) {
+            toolFactories[ toolname ] = obj[ toolname ];
+        }
+    }
+};
 
-  // Call each library factory, and return the lib object that is added to the api.
-  var initTools = function( rootId ) { //jshint ignore:line
-      var tool = {};
-      for ( var toolname in toolFactories ) {
-          if ( toolFactories.hasOwnProperty( toolname ) ) {
-              if ( tool[ toolname ] !== undefined ) {
-                  throw "impressive.js ERROR: Two libraries both tried to use libname: " +  toolname;
-              }
-              tool[ toolname ] = toolFactories[ toolname ]( rootId );
-              console.log(rootId);
-          }
-      }
-      return tool;
-  };
+// Call each library factory, and return the lib object that is added to the api.
+var initTools = function( rootId ) { //jshint ignore:line
+    var tool = {};
+    for ( var toolname in toolFactories ) {
+        if ( toolFactories.hasOwnProperty( toolname ) ) {
+            if ( tool[ toolname ] !== undefined ) {
+                throw "impressive.js ERROR: Two libraries both tried to use libname: " +  toolname;
+            }
+            tool[ toolname ] = toolFactories[ toolname ]( rootId );
+            console.log(rootId);
+        }
+    }
+    return tool;
+};
 
-})(document, window);
-
+class EditorMode{
+  constructor(){}
+}
 
 class PresentationMode{
   constructor(){
@@ -144,204 +177,12 @@ class PresentationMode{
 
 }
 
-class StepManager {
-  // This object manages the steps of our presentation 
-  constructor(){
-    // logic handling 
-    this.currentStep = null;
-    this.stepCount = 0;
-    // UI updates
-    this.root = document.querySelector("#stepList");
-    this.last = document.querySelector("#addStep");
-    let addButton = document.querySelector("#addStep");
-    addButton.addEventListener(
-      "click", (event ) => {
-        console.log(this);
-        let scene = new Canvas();
-        let x = Number(scene.dataset.x);
-        let y = Number(scene.dataset.y);
-        let scale = 1;
-        this.createStep(Array(x,y,scale));
-        console.log("New step!");
-      }
-    )
-  }
-  createStep(pos){
-    let step = document.createElement("div");
-
-    step.innerHTML = String(this.stepCount);
-    this.stepCount++;
-
-    step.classList.add("step");
-    step.dataset.x = pos[0];
-    step.dataset.y = pos[1];
-    step.dataset.scale = pos[2];
-    step.addEventListener(
-      "click", 
-      (e) => {
-        let el = e.target;
-        let scene = new Canvas();
-
-        let x = el.dataset.x;
-        let y = el.dataset.y;
-        let scale = el.dataset.scale;
-
-        scene.transition(true);
-        scene.move(x, y, scale);
-        setTimeout(() => {
-          let scene = new Canvas();
-          scene.transition(false)
-        }, 300);
-      }
-    )
-    this.last.insertAdjacentElement("beforebegin", step);
-    console.log(pos);
-  }
-  goto(step){
-    // step is the index of the step we need 
-    steps = document.querySelectorAll(".step");
-    if( step >= steps.length ){
-      alert("This step does not exsits.")
-      return
-    }
-    wanted = steps[step];
-    this.transition(wanted.dataset.x, wanted.dataset.y, wanted.dataset.scale);
-  }
-  transition(x, y, scale){
-    scene.transition(true);
-    scene.move(x, y, scale);
-    setTimeout(() => {
-      let scene = new Canvas();
-      scene.transition(false);
-    }, 300);
-  }
-}
-
-// Mouse info
-class Mouse{
-  constructor(){
-    this.clicking = false;
-    this.clickStarted = [0, 0];
-    this.currentCoord = [0, 0];
-    this.clickFinished = [0, 0];
-    this.downHandlers = {}
-    this.upHandlers = {}
-    this.moveHandlers = {}
-  }
-  addHandler(name, when, f){
-    switch(when) {
-      case "down":
-        this.downHandlers[name] = f;
-        break;
-      case "up":
-        this.upHandlers[name] = f;
-        break;
-      case "move":
-        this.moveHandlers[name] = f;
-        break
-    }
-  }
-  mouseDown(e){
-    this.clicking = true;
-    let x = e.pageX;
-    let y = e.pageY;
-    this.clickStarted = [x, y];
-    console.log(e.target)
-    for(idx in this.downHandlers)
-      this.downHandlers[idx](e);
-  }
-  mouseMove(e){
-    let x = e.pageX;
-    let y = e.pageY;
-    this.currentCoord = [x, y];
-    for(idx in this.moveHandlers)
-      this.moveHandlers[idx](e);
-  }
-  mouseUp(e){
-    let x = e.pageX;
-    let y = e.pageY;
-    this.clickFinished = [x, y];
-    this.clicking = false;
-    for(idx in this.upHandlers)
-      this.upHandlers[idx](e);
-  }
-}
-
-// This class takes care of import and export of files 
-class FileManager{
-  constructor(){}
-  static getChildren(element){
-    if( element.children.lenght == 0 ){
-      return [];
-    }
-
-    let res = [];
-    for(let child of element.children){
-      res.push({
-        type: child.tagName, 
-        x: child.dataset.x, 
-        y: child.dataset.y,
-        children: this.getChildren(child),
-      })
-    }
-
-    return res;
-  }
-  static exportFile(){
-    // This function makes a json of the whole presentation. 
-    // It contains a list of steps which relate the space 
-    // movement in time. On top of this, the animations are 
-    // encoded with each step.
-    // Finally, the elements of the canvas are all laid out together
-    // to make a canvas which exists outside of the steps.
-
-    let exported = {
-      version: "alpha",
-      stepList: null,
-      elementList: null,
-    }
-
-    // gather all the steps 
-    let stepList = new Array();
-    for(let step of document.querySelectorAll("#step")){
-      let x = step.dataset.x;
-      let y = step.dataset.y;
-      let scale = step.dataset.scale;
-      stepList.push({
-        x: x, y: y, scale: scale,
-      });
-    }
-    exported.stepList = stepList;
-
-    // gather all the elements on the canvas 
-    let elementList = this.getChildren( document.querySelector("#scene") );
-    exported.elementList = elementList;
-    
-    console.log(exported);
-    let jsonString = JSON.stringify(exported);
-    console.log(jsonString);
-    let blob = new Blob(
-      [ jsonString ],
-      {type: "application/json"}
-    );
-    let url = URL.createObjectURL(
-      blob
-    );
-
-    // return;
-    let link = document.createElement("a");
-    link.href = url;
-    link.download = "document.json";
-    link.click();
-
-    console.log(blob);
-    console.log(url);
-  } 
-  static importFile(){
-    let importElement = document.createElement("input");
-  }
-}
-
+// we export the user API here
+window.impressive = {
+  tools: {
+    RectangleTool: RectangleTool,
+  },
+};
 
 (function(document, window){
   "use strict";
@@ -433,24 +274,6 @@ class FileManager{
 
 })(document, window);
 
-class Canvas{
-  constructor(){
-   this.element = document.querySelector("#scene");
-   this.dataset = this.element.dataset;
-  }
-  move(x, y, scale){
-    let str = `translate(${x}px,${y}px) scale(${scale})`;
-    this.element.style.transform = str; 
-    console.log(str)
-  }
-  transition(set){
-    if(set){
-      self.element.style.transition = "all 0.3s linear";
-    }else{
-      self.element.style.transition = "";
-    }
-  }
-}
 
 function round(x, m){
   let r = x / m;
@@ -459,153 +282,7 @@ function round(x, m){
 var M = 32;
 var rootId = "scene";
 
-class Element{
-  constructor(element){
-    if(this.constructor == Element){
-      throw new Error("Abstract class cannot be instantiated!");
-    }
-    this.element = element;
-    this.x = Number(element.dataset.x);
-    this.y = Number(element.dataset.y);
-    this.tooSmall = false; // Does this stay ?
-  }
-  setPosition(x, y, sticky = false){
-    if(sticky) {
-      x = round(x, M); // Compute position 
-      y = round(y, M);
-    }
-    this._setPosition(x, y);
-  }
-  getProperties(){
-    return {
-      x: this.x, y: this.y,
-    }
-  }
-  getPosition(){
-    return [this.x, this.y]
-  }
-  destroy(){
-    this.element.remove();
-    delete this.element;
-  }
-  _setPosition(x, y){
-    this.element.style.transform = `translate(${x}px, ${y}px)`;
-    this.element.dataset.x = x;
-    this.element.dataset.y = y;
-    this.x = x;
-    this.y = y;
-  }
-}
 
-class Container extends Element{
-  constructor(element){
-    super(element);
-  }
-  static tranfromWrtRoot(x, y){
-    let dataset = document.querySelector(`#${rootId}`).dataset;
-    x = x - Number( dataset.x );
-    y = y - Number( dataset.y );
-    return [x, y];
-  }
-  static create(x, y){
-    let element = document.createElement("div"); // creating container
-    element.classList.add("container"); // appropriate style
-    element.style.position = "absolute"; // prevents overlapping
-    [x, y] = Container.tranfromWrtRoot(x, y);
-    element.dataset.x = x; // position is redundant, for easy retrival
-    element.dataset.y = y;
-    element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
-    document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
-    return new Container(element);
-  }
-  static fromElement(element){
-    let x = Number(element.dataset.x);
-    let y = Number(element.dataset.y);
-    return new Container(x, y, element);
-  }
-  setSize(w, h){
-    this.element.style.height = `${h}px`;
-    this.element.style.width = `${w}px`;
-  }
-  setSizeFromPos(px, py){
-    [px, py] = Container.tranfromWrtRoot(px, py);
-    let w = px - this.x;
-    let h = py - this.y;
-    this.tooSmall = h < 0 || w < 0;
-    this.setSize(w,h);
-  }
-  setFillColor(color){
-    this.element.style.backgroundColor = color;
-  }
-  setBorderColor(color){
-    this.element.style.borderColor = color;
-  }
-  setBorderThickness(t){
-    let old = Number( this.element.style.borderWidth.replace("px", "") )
-    let displacement = t - old;
-    console.log(displacement);
-    this._setPosition( this.x - displacement, this.y - displacement);
-    this.element.style.borderWidth = `${t}px`;
-    this.element.style.borderStyle = "solid";
-  }
-  setBorderRadius(r){
-    this.element.style.borderRadius = `${r}px`;
-  }
-  getProperties(){
-    let element = this.element;
-    return Object.assign(
-      {},
-      super.getProperties(), 
-      {
-        height: Number( element.style.height.replace("px", "") ),
-        width: Number( element.style.width.replace("px", "") ),
-        fillColor: element.style.backgroundColor,
-        borderColor: element.style.borderColor,
-        borderThickness: element.style.borderThickness,
-        borderRadius: Number( element.style.borderRadius.replace("px", "") ),
-      }
-    )
-  }
-  getHeight(){
-    return Number( this.element.style.height.replace("px", "") );
-  }
-  getWidth(){
-    return Number( this.element.style.width.replace("px", "") );
-  }
-  finish(){
-    if( this.tooSmall )
-      this.destroy()
-  }
-}
-
-class Window extends Container{
-  static create(x, y){
-
-    // Create the window itself 
-    let element = document.createElement("div"); // creating container
-    element.classList.add("window"); // appropriate style
-    element.style.position = "fixed"; // prevents overlapping
-    element.dataset.x = x; // position is redundant, for easy retrival
-    element.dataset.y = y;
-    element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
-    document.querySelector(`#overlay`).appendChild(element); // put it on the display
-
-    // Create the draggable element 
-    let de = document.createElement("div");
-    de.classList.add("draggable");
-    element.append(de);
-    setDraggable(element, de);
-
-    return new Window(element);
-  }
-  setPosition(x, y){
-    if(x<0) x = 0; 
-    if(x+this.width > window.innerWidth) x = window.innerWidth-this.width;
-    if(y<0) y = 0;
-    if(x+this.height > window.innerHeight) y = window.innerHeight-this.height;
-    super.setPosition(x, y);
-  }
-}
 
 function setDraggable(draggable, trigger){
   let active = null;
@@ -640,40 +317,6 @@ function setDraggable(draggable, trigger){
   );
 }
 
-class PropertyWindow extends Container{
-  constructor(element){
-    super(element)
-    this.activeElement = null; // TODO: correctly set this activeElement
-  }
-  static create(x, y){
-    let element = document.createElement("div"); // creating container
-    element.classList.add("property-window"); // appropriate style
-    element.style.position = "absolute"; // prevents overlapping
-    element.dataset.x = x; // position is redundant, for easy retrival
-    element.dataset.y = y;
-    element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
-    document.querySelector(`body`).appendChild(element); // put it on the display
-    return new PropertyWindow(element);
-  }
-  displayProperties(properties){
-    for(let key in properties){
-      let prop = document.createElement("div");
-      let label = document.createElement("label");
-      let value = document.createElement("input")
-      value.type = "text";
-
-      prop.appendChild(label);
-      prop.appendChild(value);
-
-      label.innerText = key;
-      value.value = properties[key];
-      this.element.appendChild(prop);
-    }
-  }
-  // TODO: make an eventListener for the change on each prop, so that we apply
-  // the change to this.activeElement
-}
-
 (function(document, window){
   "use strict";
 
@@ -690,7 +333,7 @@ class PropertyWindow extends Container{
 
       f = (e) => {
         mouse.mouseDown(e);
-        active = Container.create(mouse.clickStarted[0], mouse.clickStarted[1]);
+        active = Container.create(mouse.clickStarted[0], mouse.clickStarted[1], root);
         active.tooSmall = true;
         console.log(e)
       };

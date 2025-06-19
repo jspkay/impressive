@@ -7,7 +7,7 @@
     <!-- <script src="js/getEventListener.js"></script> -->
     <link rel="stylesheet" href="css/reset.css" >
     <link rel="stylesheet" href="css/impressive.css" >
-    <script src="js/impressive.js"></script>
+    <script type="module" src="js/impressive.js"></script>
     <style>
     div.container{
       background: red;
@@ -90,7 +90,8 @@
     </div>
 
     <!-- this is the draggable root to use with panzoom -->
-    <script>
+    <script type="module">
+    import {impressive} from "./js/impressive.js"
       var element = document.querySelector("#scene")
       // panzoom(element)
       impressive("scene").init() 
