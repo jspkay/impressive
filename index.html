@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <link rel="stylesheet" href="css/reset.css" >
+
+    <link rel="stylesheet" href="css/menubar.css" >
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <!-- jqueryui -->
+    <script src="js/jquery-ui.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="./css/jquery-ui.min.css" />
+
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+
+    <!-- goldenlayout -->
+    <script type="text/javascript" src="https://golden-layout.com/files/latest/js/goldenlayout.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://golden-layout.com/files/latest/css/goldenlayout-base.css" />
+    <!-- goldenlayout theme -->
+    <link type="text/css" rel="stylesheet" href="https://golden-layout.com/files/latest/css/goldenlayout-light-theme.css" />
+
+    <!-- impressive --> 
+    <script type="module" src="js/impressive.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/impressive.css" />
+    <link type="text/css" rel="stylesheet" href="css/impressiveCanvas.css" />
+
+
+    <script>
+    </script>
+  </head>
+  <body>
+    <div id="menubar">
+      <div class="dropdown">
+        <button class="item btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" >File</button>
+        <ul id="FileMenu" class="dropdown-menu">
+          <li><div class="dropdown-item" >New...</div></li>
+          <li><div class="dropdown-item" >Save...</div></li>
+          <li><div class="dropdown-item" >Open...</div></li>
+          <li><div class="dropdown-item" >Download</div></li>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button class="item btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" >Tools</button>
+        <ul id="FileMenu" class="dropdown-menu">
+          <li><div class="dropdown-item" >Container</div></li>
+          <li><div class="dropdown-item" >Pan and Zoom</div></li>
+          <li><div class="dropdown-item" >Select</div></li>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button class="item btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" >Windows</button>
+        <ul id="FileMenu" class="dropdown-menu">
+          <li><div class="dropdown-item" >Properties</div></li>
+          <li><div class="dropdown-item" >Step List</div></li>
+          <li><div class="dropdown-item" >Transitions</div></li>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button class="item btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" >Layout</button>
+        <ul id="FileMenu" class="dropdown-menu">
+          <li><div class="dropdown-item" >Save Current Layout</div></li>
+        </ul>
+
+      </div>
+    </div>
+    <div id="Toolbar" ></div>
+    <div id="mainArea" ></div>
+  </body>
+</html>
