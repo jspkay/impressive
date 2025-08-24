@@ -1,6 +1,7 @@
 "use strict";
 
 import * as logging from "./logging.js"
+import {Mouse} from "./tools.js"
 console.log(logging)
 logging.setLevel( logging.levels.DEBUG )
 
@@ -35,35 +36,23 @@ const Modes = {
 import {PropertyWindow, Container} from "./elements.js"
 import {StepManager} from "./step_manager.js"
 import {TransitionManager} from "./transition_manager.js"
+import {Canvas} from "./canvas.js"
 
 // tools 
 import {RectangleTool} from "./tools.js"
 
-class Canvas{
-  constructor(){
-   this.element = document.querySelector("#scene");
-   this.dataset = this.element.dataset;
-  }
-  move(x, y, scale){
-    let str = `translate(${x}px,${y}px) scale(${scale})`;
-    this.element.style.transform = str; 
-    console.log(str)
-  }
-  transition(smooth){
-    if(smooth){
-      this.element.style.transition = "all 0.3s linear";
-    }else{
-      this.element.style.transition = "";
-    }
-  }
-}
+// Import and export
+import {FileManager} from "./file_manager.js"
+
+
+
 
 function switchMode(mode){
   if(mode == Modes.PRESENTATION){
-    modeObject = new PresentationMode();
+    window.impressive.modeObject = new PresentationMode();
   }
   if(mode == Modes.EDITOR){
-
+    window.impressive.modeObject = new EditorMode();
   }
 }
 
@@ -72,6 +61,8 @@ logging.debug("Setting up impressive...");
 
 
 export var impressive = function(rootId){
+
+  window.filemanager = FileManager;
 
   var tools;
   var activeMode = Modes.EDITOR;
@@ -85,6 +76,13 @@ export var impressive = function(rootId){
     tools = initTools(rootId);
 
     logging.debug(tools);
+
+    let button= document.querySelector("#saveButton");
+    console.log(button);
+    button.addEventListener("click", (e) => {
+      console.log(e);
+      FileManager.exportFile();
+    });
 
     var activeTool = tools.ContainerTool;
     // activeTool.init();
@@ -172,7 +170,10 @@ class PresentationMode{
 
   handleKeys(e){
     console.log(e);
-
+    if(e.key == "Escape"){
+      window.impressive.activeMode = EditorMode;
+      switchMode(window.impressive.activeMode);
+    }
   }
 
 }
@@ -238,8 +239,8 @@ window.impressive = {
       f = (e) => {
         mouse.mouseMove(e);
         if(mouse.clicking){
-          let dx = mouse.currentCoord[0] - mouse.clickStarted[0];
-          let dy = mouse.currentCoord[1] - mouse.clickStarted[1];
+          let dx = mouse.currentCoord.x - mouse.clickStarted.x;
+          let dy = mouse.currentCoord.y - mouse.clickStarted.y;
           console.log(dx, dy);
           // active.setPositionDelta(dx, dy);
           active.setPosition( initialPos[0] + dx , initialPos[1] + dy )
@@ -284,38 +285,6 @@ var rootId = "scene";
 
 
 
-function setDraggable(draggable, trigger){
-  let active = null;
-  let mouse = new Mouse();
-  let initialPos = [];
-
-  trigger.addEventListener(
-    "mousedown",
-    (e) => {
-      mouse.mouseDown(e);
-      active = new Window(draggable);
-      initialPos  = active.getPosition();
-    }
-  );
-  document.addEventListener(
-    "mousemove",
-    (e) => {
-      mouse.mouseMove(e);
-      if(mouse.clicking){
-        let dx = mouse.currentCoord[0] - mouse.clickStarted[0]; 
-        let dy = mouse.currentCoord[1] - mouse.clickStarted[1];
-        active.setPosition( initialPos[0] + dx , initialPos[1] + dy )
-      }
-    }
-  );
-  document.addEventListener(
-    "mouseup", 
-    (e) => {
-      mouse.mouseUp(e);
-      active = null;
-    }
-  );
-}
 
 (function(document, window){
   "use strict";
@@ -330,19 +299,24 @@ function setDraggable(draggable, trigger){
 
       var mouse = new Mouse();
       let f;
+      let root = "scene";
 
       f = (e) => {
         mouse.mouseDown(e);
-        active = Container.create(mouse.clickStarted[0], mouse.clickStarted[1], root);
+        active = Container.create(mouse.clickStarted.x, mouse.clickStarted.y, root);
         active.tooSmall = true;
-        console.log(e)
+        console.log(mouse);
+        console.log(e);
       };
       document.addEventListener("mousedown", f);
       eventListeners["mousedown"] = f;
 
       f = (e) => {
         mouse.mouseMove(e);
-        if(mouse.clicking) active.setSizeFromPos(mouse.currentCoord[0], mouse.currentCoord[1]);
+        console.log(mouse);
+        if(mouse.clicking){
+        active.setSizeFromPos(mouse.currentCoord.x, mouse.currentCoord.y);
+        }
       //  console.log(e);
       };
       document.addEventListener("mousemove", f);

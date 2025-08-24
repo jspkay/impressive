@@ -1,3 +1,7 @@
+:root{ 
+  --toolbar-height: 3.5rem
+}
+
 div.window{
   top: 0;
   left: 0;
@@ -54,7 +58,6 @@ div.step {
 }
 
 div#addStep {
-  height: 100px;
   width:100%;
 }
 div#addStep > svg {
@@ -64,4 +67,33 @@ div#addStep > svg {
 
 .hidden {
   display: None;
+}
+
+div#properties {
+  background: blue; 
+  position: absolute; 
+  padding-top: var(--toolbar-height); 
+  top:0;
+  right: 0;
+  height: 100%;
+  width: 20rem;
+  z-index: -1;
+}
+
+div#saveButton {
+  width: var(--toolbar-height);
+  height: var(--toolbar-height);
+  top: 0; 
+  right: 0; 
+  position: fixed;
+  border-radius: 100px;
+  background: grey;
+  text-align: center;
+  align-content: center;
+  margin: auto;
+  cursor: pointer;
+}
+div#saveButton > svg {
+  height: 60%; 
+  width: 60%;
 }

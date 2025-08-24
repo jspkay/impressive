@@ -4,7 +4,7 @@ import {Container} from "./elements.js"
 //
 // Mouse interacts directly with the pointer of the uers and tracks 
 // informations like the position and the keypressed.
-class Mouse{
+export class Mouse{
   constructor(){
     this.clicking = false;
     this.clickStarted = {x:0, y:0};

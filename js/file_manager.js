@@ -1,7 +1,9 @@
+import {Window} from "./elements.js"
+
 // The component FileManager has two main scopes:
 // - create a json file with the information of the current presentation, 
 // - load a json file and reconstruct the presentation as described.
-class FileManager{
+export class FileManager{
   constructor(){}
   static getChildren(element){
     if( element.children.lenght == 0 ){
@@ -32,6 +34,8 @@ class FileManager{
       version: "alpha",
       stepList: null,
       elementList: null,
+      stepsHtml: null, 
+      canvasHtml: null,
     }
 
     // gather all the steps 
@@ -49,6 +53,10 @@ class FileManager{
     // gather all the elements on the canvas 
     let elementList = this.getChildren( document.querySelector("#scene") );
     exported.elementList = elementList;
+
+    // have simple HTML easy to import
+    exported.canvasHtml = document.querySelector("#scene").innerHTML;
+    exported.stepsHtml = document.querySelector("#stepList").innerHTML;
     
     console.log(exported);
     let jsonString = JSON.stringify(exported);
@@ -73,7 +81,17 @@ class FileManager{
   static importFile(){
     // TODO: Implement the import file shit
     let importElement = document.createElement("input");
-    alert("Not implemented yet!!!")
+
+    let win = new jBox('Modal', {
+      width: 100,
+      heigth: 100, 
+      title: 'Upload here!',
+      content: 'Hi all',
+      draggable: true,
+      overlay: false,
+    });
+    win.open();
+
   }
 }
 

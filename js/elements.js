@@ -1,4 +1,5 @@
 import * as logging from "./logging.js"
+import {Mouse} from "./tools.js"
 
 // The class element fives an api to put elements on the canvas.
 // It takes care of constructing elements and adding them to the DOM.
@@ -132,7 +133,7 @@ export class Container extends Element{
 // The class Window is special, in that is really used for the UI, as 
 // it's not intended to be used as an element of the presentation. 
 // TODO: Evaluate whether this should be moved to a different module
-class Window extends Container{
+export class Window extends Container{
   static create(x, y){
 
     // Create the window itself 
@@ -148,7 +149,7 @@ class Window extends Container{
     let de = document.createElement("div");
     de.classList.add("draggable");
     element.append(de);
-    setDraggable(element, de);
+    this.setDraggable(element, de);
 
     return new Window(element);
   }
@@ -158,6 +159,38 @@ class Window extends Container{
     if(y<0) y = 0;
     if(x+this.height > window.innerHeight) y = window.innerHeight-this.height;
     super.setPosition(x, y);
+  }
+  static setDraggable(draggable, trigger){
+    let active = null;
+    let mouse = new Mouse();
+    let initialPos = [];
+
+    trigger.addEventListener(
+      "mousedown",
+      (e) => {
+        mouse.mouseDown(e);
+        active = new Window(draggable);
+        initialPos  = active.getPosition();
+      }
+    );
+    document.addEventListener(
+      "mousemove",
+      (e) => {
+        mouse.mouseMove(e);
+        if(mouse.clicking){
+          let dx = mouse.currentCoord[0] - mouse.clickStarted[0]; 
+          let dy = mouse.currentCoord[1] - mouse.clickStarted[1];
+          active.setPosition( initialPos[0] + dx , initialPos[1] + dy )
+        }
+      }
+    );
+    document.addEventListener(
+      "mouseup", 
+      (e) => {
+        mouse.mouseUp(e);
+        active = null;
+      }
+    );
   }
 }
 

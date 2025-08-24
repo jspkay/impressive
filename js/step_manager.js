@@ -1,3 +1,6 @@
+import {Canvas} from "./canvas.js"
+//
+//
 // StepManager is responsible to:
 // - creating new steps 
 // - deleting steps
