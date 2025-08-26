@@ -6,7 +6,7 @@ logging.setLevel( logging.levels.DEBUG )
 
 logging.debug("Starting stuff...")
 
-import {Canvas} from "./impressiveCanvas.js"
+import {ImpressiveCanvas} from "./impressiveCanvas.js"
 
 const Modes = {
   EDITOR: 0,
@@ -21,7 +21,6 @@ logging.debug("Setting up impressive...");
 function init() {
   console.log("Hi everybody!!!"); 
 
-  menuInit();
 
   var config = {
     dimensions: {
@@ -31,29 +30,32 @@ function init() {
       content:[{
         type: 'component',
         componentName: 'testComponent',
-        componentState: { label: 'B' }
+        componentState: { label: 'Steps' },
+        title: "Step list",
       },{
         type: 'component',
-        componentName: 'Canvas',
-        width: 60,
+        componentName: 'ImpressiveCanvas',
+        componentState: {activeTool: 'PanAndZoom'},
+        size: "60%",
         isClosable: false,
       },{
         type: 'component',
         componentName: 'testComponent',
-        componentState: { label: 'C' }
+        componentState: { label: 'Properties' },
+        title: "Properties",
       }]
     }]
   };
-  $("body").css("height", (window.innerHeight-$("#menubar").height())+"px");
+  document.querySelector("body").style.height = (window.innerHeight - document.querySelector("#menubar").offsetHeight)+"px";
 
-  var myLayout = new GoldenLayout( config, $("#mainArea") );
+  var myLayout = new GoldenLayout( config, document.querySelector("#mainArea") );
 
   myLayout.registerComponent(
     'testComponent', function (container, componentState) {
-      container.getElement().html("<h2>" + componentState.label + "</h2>" )
+      container.innerHDML = "<h2>" + componentState.label + "</h2>";
     }
   );
-  myLayout.registerComponent("Canvas", Canvas);
+  myLayout.registerComponent("ImpressiveCanvas", ImpressiveCanvas);
 
   myLayout.init();
   window.layout = myLayout;
@@ -61,6 +63,8 @@ function init() {
   window.addEventListener("resize", (e)=>{
     myLayout.updateSize(window.innerWidth, window.innerHeight-$("#menubar").height());
   })
+
+  menuInit();
 }
 
 window.impressive = {

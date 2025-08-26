@@ -1,13 +1,23 @@
 export function init() {
-  for( let element of $("#menubar").children(".item")) {
-    let name = $(element).html();
-    let id="#"+name+"Menu"
-    let menu = $(id).menu()
-    menu.hide();
-    menu.on("focusout", () => {menu.hide()} );
+  $("button.item").each(function (){
+    switch( $(this).html() ){
+      case "Tools":
+        initTools(this);
+        break;
+      default:
+      break;
+    }
+  });
+}
 
-    $(element).on("click", (e)=>{
-      menu.show();
-    });
+function initTools(element){
+  for ( let actions of $(element).siblings().children() ){
+    let tool = $(actions).children().html(); 
+    let selectedTool = tool.split(" ").map(
+      (v) => { return v.charAt(0).toUpperCase() + v.slice(1) }).join("");
+
+    actions.addEventListener("click", function(event){
+          window.layout.eventHub.emit("toolChanged", {newTool: selectedTool});
+        });
   }
 }
