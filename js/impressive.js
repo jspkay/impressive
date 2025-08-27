@@ -7,6 +7,7 @@ logging.setLevel( logging.levels.DEBUG )
 logging.debug("Starting stuff...")
 
 import {ImpressiveCanvas} from "./impressiveCanvas.js"
+import {PropertiesWindow} from "./windows.js"
 
 const Modes = {
   EDITOR: 0,
@@ -40,7 +41,7 @@ function init() {
         isClosable: false,
       },{
         type: 'component',
-        componentName: 'testComponent',
+        componentName: 'PropertiesWindow',
         componentState: { label: 'Properties' },
         title: "Properties",
       }]
@@ -52,10 +53,11 @@ function init() {
 
   myLayout.registerComponent(
     'testComponent', function (container, componentState) {
-      container.innerHDML = "<h2>" + componentState.label + "</h2>";
+      container.innerHTML = "<h2>" + componentState.label + "</h2>";
     }
   );
-  myLayout.registerComponent("ImpressiveCanvas", ImpressiveCanvas);
+  myLayout.registerComponentConstructor("ImpressiveCanvas", ImpressiveCanvas);
+  myLayout.registerComponentConstructor("PropertiesWindow", PropertiesWindow);
 
   myLayout.init();
   window.layout = myLayout;

@@ -22,6 +22,19 @@ export class Mouse{
     }
     return [x, y];
   }
+  static getCoordinates(e, relativeElement){
+    let x,y;
+    if(relativeElement == null){
+      x = e.pageX;
+      y = e.pageY;
+    }
+    else{
+      let gbcr = this.relativeElement.getBoundingClientRect();
+      x = e.pageX - gbcr.x;
+      y = e.pageY - gbcr.y;
+    }
+    return [x, y];
+  }
   mouseDown(e){
     this.clicking = true;
     let [x, y] = this.getCoordinates(e);

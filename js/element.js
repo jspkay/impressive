@@ -21,9 +21,16 @@ class Element{
     }
     this._setPosition(x, y);
   }
+  getPropertiesList(){
+    return {
+      x: "value",
+      y: "value",
+    }
+  }
   getProperties(){
     return {
-      x: this.x, y: this.y,
+      x: this.x,
+      y: this.y,
     }
   }
   getPosition(){

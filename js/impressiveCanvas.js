@@ -7,16 +7,20 @@ import {Container} from "./element.js";
 export class ImpressiveCanvas{
   constructor(container, componentState){
     this.containerElement = container.getElement();
-    this.element = $("<div/>", {id: 'impressiveCanvas'});
-    this.element.appendTo(container.getElement());
+    this.element = document.createElement("div");
+    this.element.setAttribute("id", "impressiveCanvas");
+    this.containerElement.append(this.element);
 
-    this.dataset = this.element[0].dataset;
+    this.containerElement.style.backgroundPositionX = "0px";
 
+    this.dataset = this.element.dataset;
     this.dataset.x = 0;
     this.dataset.y = 0;
+    this.element.style.scale = 1;
 
-    this.mouseHandling = new ContainerTool(container.getElement(), this.element);
+    this.mouseHandling = new ContainerTool(this, container.getElement(), this.element);
 
+    // Events 
     container.layoutManager.eventHub.on("toolChanged", this.changeTool.bind(this));
 
   }
@@ -25,10 +29,10 @@ export class ImpressiveCanvas{
     delete this.mouseHandling;
     switch(event.newTool){
       case "Container":
-        this.mouseHandling = new ContainerTool(this.containerElement, this.element);
+        this.mouseHandling = new ContainerTool(this, this.containerElement, this.element);
         break;
       case "PanAndZoom":
-        this.mouseHandling = new PanAndZoomTool(this.containerElement, this.element);
+        this.mouseHandling = new PanAndZoomTool(this, this.containerElement, this.element);
         break;
       default:
         alert("Tool "+event.newTool+" not impremented yet...");
@@ -52,46 +56,17 @@ export class ImpressiveCanvas{
       this.element.style.transition = "";
     }
   }
-}
-
-class Tool{
-  constructor(trigger, element){
-    this.trigger = trigger;
-    this.element = element;
-    this.mouse = new Mouse(trigger);
-    logging.debug(this.mouse);
-    this.newElement = null;
-    this.trigger.addEventListener(
-      "mousedown",
-      this.mDown = this.mouseDown.bind(this)
-    );
-    this.trigger.addEventListener(
-      "mousemove",
-      this.mMove = this.mouseMove.bind(this)
-    );
-    this.trigger.addEventListener(
-      "mouseup",
-      this.mUp = this.mouseUp.bind(this)
-    );
-  }
-  destroy(){
-    this.trigger.removeEventListener("mousedown", this.mDown);
-    this.trigger.removeEventListener("mouseup", this.mUp);
-    this.trigger.removeEventListener("mousemove", this.mMove);
-    
-  }
-}
-
-class MainBody{
-  constructor(element){
-    this.element = document.querySelector(`#${element}`);
-    this.speed = 0.1;
-  }
   setPosition(x, y){
     console.log("setting Position to ", x, y);
-    this.element.style.transform = `translate(${x}px, ${y}px)`;
+    this.element.style.transform = `translate(${x}px,${y}px)`;
     this.element.dataset.x = x;
     this.element.dataset.y = y;
+  }
+  setScale(s){
+    this.element.style.scale = String(s);
+  }
+  getScale(){
+    return this.element.style.scale;
   }
   getPosition(){
     let style = window.getComputedStyle(this.element);
@@ -105,25 +80,54 @@ class MainBody{
     let y = Number(values[5]);
     return [x, y];
   }
-  setPositionDelta(dx, dy){
-    let [x, y] = this.getPosition();
-    this.setPosition(x+dx*this.speed, y+dy*this.speed);
+}
+
+class Tool{
+  constructor(canvas, trigger, element){
+    this.canvas = canvas;
+    this.trigger = trigger;
+    this.element = element;
+    this.mouse = new Mouse(trigger);
+    logging.debug(this.mouse);
+    this.newElement = null;
+    this.trigger.addEventListener( "mousedown", this.mDown = this.mouseDown.bind(this));
+    this.trigger.addEventListener( "mousemove", this.mMove = this.mouseMove.bind(this));
+    this.trigger.addEventListener( "mouseup", this.mUp = this.mouseUp.bind(this));
+    this.trigger.addEventListener( "wheel", this.wheel = this.wheel.bind(this));
+  }
+  destroy(){
+    this.trigger.removeEventListener("mousedown", this.mDown);
+    this.trigger.removeEventListener("mouseup", this.mUp);
+    this.trigger.removeEventListener("mousemove", this.mMove);
+    this.trigger.removeEventListener("wheel", this.wheel);
+  }
+  mDown(e){
+    console.log("event not implemented", e);
+  }
+  mUp(e){
+    console.log("event not implemented", e);
+  }
+  mMove(e){
+    console.log("event not implemented", e);
+  }
+  wheel(e){
+    console.log("event not implemented", e);
   }
 }
 class PanAndZoomTool extends Tool{
   mouseDown(e){
     this.mouse.mouseDown(e);
-    this.active = new MainBody("impressiveCanvas");
-    this.initialPos = this.active.getPosition();
+    this.initialPos = this.canvas.getPosition();
   }
   mouseMove(e){
-    this.mouse.mouseMove(e);
+  this.mouse.mouseMove(e);
     if(this.mouse.clicking){
+      let scale = this.canvas.getScale();
       let dx = this.mouse.currentCoord.x - this.mouse.clickStarted.x;
       let dy = this.mouse.currentCoord.y - this.mouse.clickStarted.y;
       console.log(dx, dy);
       // active.setPositionDelta(dx, dy);
-      this.active.setPosition( this.initialPos[0] + dx , this.initialPos[1] + dy );
+      this.canvas.setPosition( this.initialPos[0] + dx / scale , this.initialPos[1] + dy / scale );
       let pdx = dx % 32;
       let pdy = dy % 32;
       this.trigger.style.backgroundPosition = `${pdx}px ${pdy}px` ;
@@ -131,7 +135,21 @@ class PanAndZoomTool extends Tool{
   }
   mouseUp(e){
     this.mouse.mouseUp(e);
-    this.active = null;
+  }
+  wheel(e){
+    let s = this.canvas.getScale();
+    let ds = (1 - e.deltaY / 300);
+    this.canvas.setScale(s * ds );
+    let cs = Number(this.trigger.style.backgroundSize.replace("px", "")) * ds;
+    console.log(cs);
+    if(cs < 5 || cs > 100){
+      cs = 32;
+    }
+    this.trigger.style.backgroundSize = `${cs}px`;
+    // let currentBgPos = Number(this.trigger.backgroundPositionX.replace("px", ""));
+
+    // TODO: Make it such the background is correclty proportioned to the scaling
+    this.trigger.style.backgroundPositionX = `${0}px`;
   }
 }
 
@@ -141,7 +159,7 @@ class ContainerTool extends Tool{
     this.newElement = Container.create(
       this.mouse.clickStarted.x,
       this.mouse.clickStarted.y,
-      this.element.attr("id"), // from jquery to vanillajs 
+      this.element.getAttribute("id"),
     );
     this.newElement.tooSmall = true;
     logging.debug(this.mouse);
@@ -160,6 +178,10 @@ class ContainerTool extends Tool{
   mouseUp(e){
     this.mouse.mouseUp(e);
     this.newElement.finish();
+    if(! this.newElement.tooSmall) {
+      window.layout.eventHub.emit(
+        "selectElement", {element:this.newElement});
+      }
     this.newElement = null;
   }
 }
