@@ -35,17 +35,30 @@ export function makeFieldNumber(prop, value, alwaysPositive=false){
     window.layout.eventHub.emit("propertyChanged", {[prop]: e.target.value});
   });
 
+  // create the event listenere for the plus button 
   let btn = root.querySelector(".btn-value-plus");
   btn.addEventListener("click", (e) => {
     input.value = Number(input.value) + 1;
     window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
   });
-  btn.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    input.value = Number(input.value) + e.deltaY;
-    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
-  });
+  // when scrolling, also the plus button can go to <0
+  if(alwaysPositive){
+    btn.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      input.value = Number(input.value) + e.deltaY;
+      if(input.value < 1){ input.value = 1; }
+      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    });
 
+  }else{
+    btn.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      input.value = Number(input.value) + e.deltaY;
+      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    });
+  }
+
+  // create the event listener for the minus button
   btn = root.querySelector(".btn-value-minus");
   if(! alwaysPositive){
     btn.addEventListener("click", (e) => {

@@ -99,8 +99,8 @@ export class Container extends Element{
       width: "pnumber",
       fillColor: "color",
       borderColor: "color",
-      borderThickness: "number",
-      borderRadius: "number",
+      borderThickness: "pnumber",
+      borderRadius: "pnumber",
     };
     return Object.assign({}, parentList, list);
   }
