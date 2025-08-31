@@ -1,0 +1,33 @@
+.PropertiesWindow{
+  padding: 0.5rem;
+  overflow-y: scroll;
+}
+
+.input-group input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+.input-group input::-webkit-outer-spin-button,
+.input-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+} 
+
+.btn-regulators{
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-regulators > button{
+  height: 50%;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.btn-value-minus{
+  border-radius: 0 var(--bs-border-radius) 0 0;
+}
+
+.btn-value-plus{  
+  margin-top: calc(-1 * var(--bs-border-width));
+  border-radius: 0 0 var(--bs-border-radius) 0;
+}

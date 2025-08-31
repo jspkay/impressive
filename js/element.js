@@ -1,5 +1,3 @@
-import * as logging from "./logging.js";
-
 // The class element fives an api to put elements on the canvas.
 // It takes care of constructing elements and adding them to the DOM.
 // On top of that, it gives access to the basic properties of every element
@@ -23,8 +21,23 @@ class Element{
   }
   getPropertiesList(){
     return {
-      x: "value",
-      y: "value",
+      x: "number",
+      y: "number",
+    }
+  }
+  setProperty(prop, value){
+    switch(prop){
+      case "x":
+        let y = this.getPosition()[1];
+        this.setPosition(value, y);
+        break;
+      case "y":
+        let x = this.getPosition()[0];
+        this.setPosition(x, value);
+        break;
+      default:
+        console.log("Property "+ prop + " is not part of " + this);
+        break;
     }
   }
   getProperties(){
@@ -57,7 +70,6 @@ export class Container extends Element{
     super(element);
   }
   static tranfromWrtRoot(x, y){
-    logging.debug("element.js:tranfromWrtRoot:" + this.rootId)
     let dataset = document.querySelector(`#${this.rootId}`).dataset;
     x = x - Number( dataset.x );
     y = y - Number( dataset.y );
@@ -79,6 +91,33 @@ export class Container extends Element{
     let x = Number(element.dataset.x);
     let y = Number(element.dataset.y);
     return new Container(x, y, element);
+  }
+  getPropertiesList(){
+    let parentList = super.getPropertiesList();
+    let list = {
+      height: "pnumber",
+      width: "pnumber",
+      fillColor: "color",
+      borderColor: "color",
+      borderThickness: "number",
+      borderRadius: "number",
+    };
+    return Object.assign({}, parentList, list);
+  }
+  setProperty(prop, value){
+    switch(prop){
+      case "height": 
+        let w = this.getWidth();
+        this.setSize(w, value);
+        break;
+      case "width": 
+        let h = this.getHeight();
+        this.setSize(value, h);
+        break;
+      default:
+        super.setProperty(prop, value);
+        break;
+    }
   }
   setSize(w, h){
     this.element.style.height = `${h}px`;
