@@ -1,13 +1,15 @@
 export function init() {
-  $("button.item").each(function (){
-    switch( $(this).html() ){
+  let buttons = document.querySelectorAll("button.item");
+  for(let bt of buttons){
+    let html = bt.innerHTML;
+    switch(html){
       case "Tools":
-        initTools(this);
+        initTools(bt);
         break;
       default:
-      break;
+        break;
     }
-  });
+  }
 }
 
 function initTools(element){
