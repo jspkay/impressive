@@ -119,6 +119,11 @@ export class Container extends Element{
         break;
     }
   }
+  getSize(){
+    let w = this.getWidth();
+    let h = this.getHeight();
+    return [w, h];
+  }
   setSize(w, h){
     this.element.style.height = `${h}px`;
     this.element.style.width = `${w}px`;

@@ -15,16 +15,16 @@ export class PropertiesWindow{
 
     // Events 
     container.layoutManager.eventHub.on("selectElement", this.selectElement.bind(this));
-    container.layoutManager.eventHub.on("propertyChanged", this.updateSelected.bind(this));
+    container.layoutManager.eventHub.on("propertyChanged", this.updateProperty.bind(this));
   }
   selectElement(e){
     this.element.innerHTML = ""; // reset the element
 
     this.selected = e.element;
 
+
     let list = e.element.getProperties();
     let types = e.element.getPropertiesList();
-    console.log(list);
     for( const [property, value] of Object.entries(list)){
       let element;
       switch(types[property]){
@@ -41,8 +41,9 @@ export class PropertiesWindow{
       this.element.appendChild(element);
     }
 
+
   }
-  updateSelected(e){
+  updateProperty(e){
     let prop = Object.keys( e )[0];
     console.log(this.selected);
     this.selected.setProperty(prop, e[prop]);

@@ -105,9 +105,40 @@ export class ContainerTool extends Tool{
 
 export class SelectTool extends Tool{
   mouseDown(e){
-    let container = new Container(e.target)
+
+    if(this.selected === e.target) return;
+
+    if(this.selected != null){
+      interact(this.selected).draggable(false);
+    }
+    this.selected = e.target;
+    let container = new Container(e.target);
     window.layout.eventHub.emit(
       "selectElement", {element: container});
+
+    let move = function(e){
+          let [x, y] = container.getPosition();
+          container.setPosition(x+e.dx, y+e.dy);
+        }
+    let int = interact(e.target);
+    int.draggable({
+        onmove: move,
+    })
+    int.resizable({
+      edges:{
+        top: true, bottom:true, left:true, right:true,
+      },
+      onmove: (e)=>{
+          let [w, h] = container.getSize();
+          console.log(e.rect);
+          console.log(e.deltaRect);
+          
+          let dx = (e.deltaRect.right != 0 || e.deltaRect.left != 0);
+          let dy = (e.deltaRect.top != 0 || e.deltaRect.bottom != 0);
+
+          container.setSize(dx ? w+e.dx : w, dy ? h+e.dy : h);
+        }
+    });
   }
   mouseUp(e){}
   mouseMove(e){}
