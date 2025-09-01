@@ -106,11 +106,6 @@ export class ContainerTool extends Tool{
 export class SelectTool extends Tool{
   mouseDown(e){
 
-    if(this.selected === e.target) return;
-
-    if(this.selected != null){
-      interact(this.selected).draggable(false);
-    }
     this.selected = e.target;
     let container = new Container(e.target);
     window.layout.eventHub.emit(
@@ -121,26 +116,71 @@ export class SelectTool extends Tool{
           container.setPosition(x+e.dx, y+e.dy);
         }
     let int = interact(e.target);
-    int.draggable({
-        onmove: move,
-    })
     int.resizable({
       edges:{
         top: true, bottom:true, left:true, right:true,
       },
+      onstart: function(e){
+        this.resizing = e.target;
+        this.startX = e.pageX;
+        this.startY = e.pageY;
+      }.bind(this),
       onmove: (e)=>{
-          let [w, h] = container.getSize();
-          console.log(e.rect);
-          console.log(e.deltaRect);
-          
-          let dx = (e.deltaRect.right != 0 || e.deltaRect.left != 0);
-          let dy = (e.deltaRect.top != 0 || e.deltaRect.bottom != 0);
+        let [w, h] = container.getSize();
+        console.log(e.rect);
+        console.log(e.deltaRect);
+        
+        let dx = (e.deltaRect.right != 0 || e.deltaRect.left != 0);
+        let dy = (e.deltaRect.top != 0 || e.deltaRect.bottom != 0);
 
-          container.setSize(dx ? w+e.dx : w, dy ? h+e.dy : h);
-        }
+        // TODO: make it such when clicked, a box with the handles
+        // appear to make the resize. Otherwise, hovering over an element
+        // creates already the interact object, so that if the user clicks 
+        // and drags, it's already available.
+
+        console.log(e.deltaRect.width);
+        this.canvas.setContainerSizeDelta(
+          container,
+          e.deltaRect,
+          dx ? e.pageX - this.startX : 0,
+          dy ? e.deltaRect.height : 0,
+        );
+        // container.setSize(dx ? w+e.dx : w, dy ? h+e.dy : h);
+      },
+      onend: function(e){
+        this.resizing = undefined;
+      }.bind(this),
     });
   }
   mouseUp(e){}
-  mouseMove(e){}
+  mouseMove(e){
+    if(this.dragging || this.resizing)
+      return;
+    let element = e.target;
+    if(
+      this.draggable != undefined &&
+      this.draggable != element && 
+      this.resizing != undefined
+    ){
+      interact(this.draggable).unset();
+      this.draggable = undefined;
+    }
+    if(element.classList.contains("impressiveContainer")){
+      this.draggable = element;
+      let container = new Container(element);
+      let int = interact(element);
+      int.draggable({
+        onstart: function(e){
+          this.dragging = true;
+        }.bind(this),
+        onmove: function(e){
+          this.canvas.setContainerPositionDelta( container, e.dx, e.dy );
+        }.bind(this),
+        onend: function(e){
+          this.dragging = false;
+        }.bind(this),
+      });
+    }
+  }
   wheel(e){}
 }

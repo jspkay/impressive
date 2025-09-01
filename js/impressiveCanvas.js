@@ -66,7 +66,7 @@ export class ImpressiveCanvas{
     this.element.style.scale = String(s);
   }
   getScale(){
-    return this.element.style.scale;
+    return Number(this.element.style.scale);
   }
   getPosition(){
     let style = window.getComputedStyle(this.element);
@@ -79,6 +79,21 @@ export class ImpressiveCanvas{
     let x = Number(values[4]);
     let y = Number(values[5]);
     return [x, y];
+  }
+  // All the other methods are needed to interact with the elements 
+  // The methods are needed here since this object has all the knowledge
+  // of positioning, scale and stuff like that.
+  setContainerPositionDelta(container, dx, dy){
+    let [x, y] = container.getPosition();
+    let scale = this.getScale();
+    container.setPosition(x+dx/scale, y+dy/scale);
+  }
+  setContainerSizeDelta(container, side, dw, dh){
+    let [w, h] = container.getSize();
+    let scale = this.getScale();
+    container.setSize(w+dw/scale, h+dh/scale);
+    let [neww, newh] = container.getSize();
+    console.log("width", neww, "dx", neww-w);
   }
 }
 
