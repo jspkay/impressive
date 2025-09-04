@@ -17,6 +17,8 @@ export class ImpressiveCanvas{
 
     this.mouseHandling = new ContainerTool(this, container.getElement(), this.element);
 
+    window.impressiveCanvas = this;
+
     // Events 
     container.layoutManager.eventHub.on("toolChanged", this.changeTool.bind(this));
 
@@ -63,7 +65,18 @@ export class ImpressiveCanvas{
     this.element.dataset.y = y;
   }
   setScale(s){
+    let res = true;
+    if(s < 0.00002){
+      s = 0.00002;
+      res = false;
+    }
+    if(s > 16556){
+      s = 16556;
+      res = false;
+    }
     this.element.style.scale = String(s);
+    console.log(s);
+    return res;
   }
   getScale(){
     return Number(this.element.style.scale);
@@ -80,6 +93,30 @@ export class ImpressiveCanvas{
     let y = Number(values[5]);
     return [x, y];
   }
+  triggerCoordinateToCanvas(x, y){
+    /* This function takes a coordinate (x,y)
+     * from the trigger (which is made by the 
+     * mousedown event) and translates its coordinate 
+     * to the canvas. 
+     * The way it works is easy:
+     *  - the initial coordinate x has to be amplified by
+     *      1/scale, to match the scale.
+     *  - then this coordinate is offset-ted by offX: 
+     *    it corresponds to the total size of the scaled
+     *    canvas this.element.offsetWidth/scale, from which 
+     *    we remove the size of the original canvas and then we 
+     *    divide by two. Basically, the canvas is 1/scale bigger 
+     *    than the original. The extra contour width/scale - width 
+     *    is equally spaced to the right and left, thus we divide by 2.
+     * */
+    let scale = this.getScale();
+    let offX = this.element.offsetWidth * (1/scale - 1) / 2;
+    let offY = this.element.offsetHeight * (1/scale - 1) / 2;
+    return [ 
+      x / scale - offX,
+      y / scale - offY,
+    ]
+  }
   // All the other methods are needed to interact with the elements 
   // The methods are needed here since this object has all the knowledge
   // of positioning, scale and stuff like that.
@@ -88,12 +125,13 @@ export class ImpressiveCanvas{
     let scale = this.getScale();
     container.setPosition(x+dx/scale, y+dy/scale);
   }
-  setContainerSizeDelta(container, side, dw, dh){
-    let [w, h] = container.getSize();
+  setContainerSizeInteract(container, rect, deltaRect){
     let scale = this.getScale();
-    container.setSize(w+dw/scale, h+dh/scale);
-    let [neww, newh] = container.getSize();
-    console.log("width", neww, "dx", neww-w);
+    console.log(rect);
+    container.setSize(rect.width/scale, rect.height/scale);
+    let [x,y] = container.getPosition();
+    console.log(deltaRect.top);
+    container.setPosition(x + deltaRect.left/scale, y + deltaRect.top / scale);
   }
 }
 

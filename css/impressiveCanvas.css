@@ -1,10 +1,10 @@
 div.lm_content:has( #impressiveCanvas ){
   background: white repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgSURBVHgB7cAxDQAACAOwBeVI58HDnjb7UjIBAAAAyg6hHgQDoYSOAQAAAABJRU5ErkJggg==");
-  background-position:0;
 }
 
 #impressiveCanvas{
   height: 100%;
   width: 100%;
-  /* background: white repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgSURBVHgB7cAxDQAACAOwBeVI58HDnjb7UjIBAAAAyg6hHgQDoYSOAQAAAABJRU5ErkJggg=="); */
+  background: white repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgSURBVHgB7cAxDQAACAOwBeVI58HDnjb7UjIBAAAAyg6hHgQDoYSOAQAAAABJRU5ErkJggg==");
+  background: transparent;
 }

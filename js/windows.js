@@ -29,7 +29,7 @@ export class PropertiesWindow{
       let element;
       switch(types[property]){
         case "number":
-          element = makeFieldNumber(property, value);
+          element = makeFieldNumber(property, value, false);
           break;
         case "pnumber":
           element = makeFieldNumber(property, value, true);

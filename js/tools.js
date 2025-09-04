@@ -58,13 +58,12 @@ export class PanAndZoomTool extends Tool{
   wheel(e){
     let s = this.canvas.getScale();
     let ds = (1 - e.deltaY / 300);
-    this.canvas.setScale(s * ds );
+    let changed = this.canvas.setScale(s * ds );
+    if(!changed) return;
     let cs = Number(this.trigger.style.backgroundSize.replace("px", "")) * ds;
-    console.log(cs);
     if(cs < 10) cs = 100
     if(cs > 100) cs = 10;
     this.trigger.style.backgroundSize = `${cs}px`;
-    // let currentBgPos = Number(this.trigger.backgroundPositionX.replace("px", ""));
 
     // TODO: Make it such the background is correclty proportioned to the scaling
     this.trigger.style.backgroundPositionX = `${0}px`;
@@ -74,9 +73,13 @@ export class PanAndZoomTool extends Tool{
 export class ContainerTool extends Tool{
   mouseDown(e){
     this.mouse.mouseDown(e);
-    this.newElement = Container.create(
+    let [x, y] = this.canvas.triggerCoordinateToCanvas(
       this.mouse.clickStarted.x,
-      this.mouse.clickStarted.y,
+      this.mouse.clickStarted.y 
+    )
+    this.newElement = Container.create(
+      x,
+      y,
       this.element.getAttribute("id"),
     );
     this.newElement.tooSmall = true;
@@ -84,9 +87,13 @@ export class ContainerTool extends Tool{
   mouseMove(e){
     this.mouse.mouseMove(e);
     if(this.mouse.clicking){
-      this.newElement.setSizeFromPos(
+      let [x, y] = this.canvas.triggerCoordinateToCanvas(
         this.mouse.currentCoord.x,
-        this.mouse.currentCoord.y
+        this.mouse.currentCoord.y 
+      )
+      this.newElement.setSizeFromPos(
+        x,
+        y,
       );
     }
   }
@@ -122,28 +129,16 @@ export class SelectTool extends Tool{
       },
       onstart: function(e){
         this.resizing = e.target;
-        this.startX = e.pageX;
-        this.startY = e.pageY;
+        this.draggable = e.target;
       }.bind(this),
       onmove: (e)=>{
         let [w, h] = container.getSize();
         console.log(e.rect);
         console.log(e.deltaRect);
-        
-        let dx = (e.deltaRect.right != 0 || e.deltaRect.left != 0);
-        let dy = (e.deltaRect.top != 0 || e.deltaRect.bottom != 0);
-
-        // TODO: make it such when clicked, a box with the handles
-        // appear to make the resize. Otherwise, hovering over an element
-        // creates already the interact object, so that if the user clicks 
-        // and drags, it's already available.
-
-        console.log(e.deltaRect.width);
-        this.canvas.setContainerSizeDelta(
-          container,
+        this.canvas.setContainerSizeInteract(
+          container, 
+          e.rect, 
           e.deltaRect,
-          dx ? e.pageX - this.startX : 0,
-          dy ? e.deltaRect.height : 0,
         );
         // container.setSize(dx ? w+e.dx : w, dy ? h+e.dy : h);
       },
@@ -159,8 +154,7 @@ export class SelectTool extends Tool{
     let element = e.target;
     if(
       this.draggable != undefined &&
-      this.draggable != element && 
-      this.resizing != undefined
+      this.draggable != element
     ){
       interact(this.draggable).unset();
       this.draggable = undefined;
