@@ -7,7 +7,7 @@ logging.setLevel( logging.levels.DEBUG )
 logging.debug("Starting stuff...")
 
 import {ImpressiveCanvas} from "./impressiveCanvas.js"
-import {PropertiesWindow} from "./windows.js"
+import {PropertiesWindow, StepListWindow} from "./windows.js"
 
 const Modes = {
   EDITOR: 0,
@@ -30,7 +30,7 @@ function init() {
       type: 'row',
       content:[{
         type: 'component',
-        componentName: 'testComponent',
+        componentName: 'StepListWindow',
         componentState: { label: 'Steps' },
         title: "Step list",
       },{
@@ -58,6 +58,7 @@ function init() {
   );
   myLayout.registerComponentConstructor("ImpressiveCanvas", ImpressiveCanvas);
   myLayout.registerComponentConstructor("PropertiesWindow", PropertiesWindow);
+  myLayout.registerComponentConstructor("StepListWindow", StepListWindow);
 
   myLayout.init();
   window.layout = myLayout;
@@ -71,6 +72,7 @@ function init() {
 
 window.impressive = {
   init: init,
+  canvas: undefined,
 }
 
 impressive.init();

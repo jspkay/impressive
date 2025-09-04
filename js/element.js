@@ -95,8 +95,8 @@ export class Container extends Element{
   getPropertiesList(){
     let parentList = super.getPropertiesList();
     let list = {
-      height: "pnumber",
       width: "pnumber",
+      height: "pnumber",
       fillColor: "color",
       borderColor: "color",
       borderThickness: "pnumber",

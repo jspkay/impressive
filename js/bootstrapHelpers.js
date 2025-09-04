@@ -82,36 +82,24 @@ export function makeFieldNumber(prop, value, alwaysPositive=false){
   return root;
 }
 
-
-export function makeValueFieldbak(prop, value){
-  let root = document.createElement("div");
-  root.classList.add("input-group", "mb-3");
-
-  let name = document.createElement("span");
-  name.classList.add("input-group-text");
-  name.innerHTML = prop;
-  root.appendChild(name);
-
-  let input = document.createElement("input");
-  input.setAttribute("type", "text");
-  input.setAttribute("placeholder", prop);
-  input.classList.add("form-control");
-  root.appendChild(input);
-  input.value = value;
-
-  let div = document.createElement("div");
-  div.classList.add("btn-value-holder");
-  root.appendChild(input);
-
-  let button = document.createElement("button");
-  button.classList.add("btn", "btn-outline-secondary");
-  button.setAttribute("type", "button");
-  div.appendChild(button);
-
-  button = document.createElement("button");
-  button.classList.add("btn", "btn-outline-secondary");
-  button.setAttribute("type", "button");
-  root.appendChild(button);
-
-  return root;
+export function makeContextMenu(elements){
+  let menu = document.createElement("div");
+  let list = document.createElement("div");
+  list.classList.add("list-group");
+  menu.appendChild(list);
+  for(const [label, listener] of Object.entries(elements) ){
+    let a = document.createElement("a");
+    a.setAttribute("href", "#");
+    a.classList.add("list-group-item", "list-group-item-action");
+    a.innerHTML = label;
+    a.addEventListener(
+    "click", (e)=>{ listener(e); menu.remove(); },
+    );
+    list.appendChild(a);
+  }
+  menu.addEventListener("mouseleave", (e) => {
+    menu.remove();
+    menu = undefined;
+  });
+  return menu;
 }

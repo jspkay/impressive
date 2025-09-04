@@ -1,0 +1,19 @@
+div#StepListWindow{
+  overflow: scroll;
+  background: cyan;
+}
+
+div#AddStep {
+  width:100%;
+}
+div#AddStep > svg {
+  width: 100%;
+  height: 100%;
+}
+
+div.step{
+  width: 100%;
+  height: 10rem;
+  margin-bottom: 1rem;
+  background: white;
+}

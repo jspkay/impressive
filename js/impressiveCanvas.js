@@ -3,6 +3,7 @@ import {PanAndZoomTool, ContainerTool, SelectTool} from "./tools.js";
 
 export class ImpressiveCanvas{
   constructor(container, componentState){
+    window.impressive.canvas = this;
     this.containerElement = container.getElement();
     this.element = document.createElement("div");
     this.element.setAttribute("id", "impressiveCanvas");
@@ -132,6 +133,13 @@ export class ImpressiveCanvas{
     let [x,y] = container.getPosition();
     console.log(deltaRect.top);
     container.setPosition(x + deltaRect.left/scale, y + deltaRect.top / scale);
+  }
+  setSmoothTransition(smooth){
+    if(smooth){
+      this.element.style.transition = "all 0.3s linear";
+    }else{
+      this.element.style.transition = "";
+    }
   }
 }
 
