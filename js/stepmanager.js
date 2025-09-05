@@ -9,6 +9,7 @@ export class StepManager{
     this.gotos = [];
   }
   goto(step){
+    console.log(`goto step ${step}`);
     let steps = document.querySelectorAll(".step");
     console.assert(step < steps.length, "The step selected is out of range...");
 
@@ -44,15 +45,11 @@ export class StepManager{
     step.dataset.y = currentPos[1];
     step.dataset.scale = currentScale;
 
-    let goto = this.gotoFactory(this.stepCount)
-    step.addEventListener(
-      "click",
-      goto
-    );
-    this.gotos.push(goto);
 
     this.last.insertAdjacentElement("beforebegin", step);
     this.stepCount++;
+
+    window.layout.eventHub.emit("stepCreated",{});
   }
   deleteStep(stepElement){
     console.log(stepElement);
@@ -60,22 +57,8 @@ export class StepManager{
     let steps = document.querySelectorAll(".step");
     let index = 0;
     let found = false;
-    for(let i = 0; i<steps.length; i++){
-      if(found){
-        // TODO: This workaround doesn't work.
-        // We might need to 
-        let oldListener = this.gotoFactory(i);
-        steps[i].removeEventListener(
-          "click", this.gotos[i]
-        );
-        this.gotos.splice(i, 1);
-        steps[i].addEventListener(
-          "click", this.gotoFactory(i-1)
-        );
-      }
+    for(let i = 0; !found && i<steps.length; i++)
       if(steps[i] === stepElement) found = true;
-    }
-
     stepElement.remove();
     this.stepCount--;
   }

@@ -1,5 +1,6 @@
 "use strict";
 
+import {Mouse} from "./mouse.js";
 import {makeField, makeFieldNumber, makeContextMenu} from "./bootstrapHelpers.js";
 import {StepManager} from "./stepmanager.js";
 
@@ -88,7 +89,39 @@ export class StepListWindow{
       this.StepManager.createStep.bind(this.StepManager)
     );
 
-    this.element.addEventListener("contextmenu", this.contextMenu.bind(this))
+    container.layoutManager.eventHub.on(
+      "stepCreated", this.stepCreated.bind(this)
+    );
+    this.element.addEventListener(
+      "click", this.handleClick.bind(this)
+    )
+    this.element.addEventListener(
+      "contextmenu", this.contextMenu.bind(this)
+    );
+  }
+  stepCreated(e){
+    // NOTE: The documentation says that you can just 
+    // reload the sortable, but apparently it doesn't work.
+    // So, the ugly hack is to destroy it and make it again.
+    // sortable("#StepListWindow", "destroy");
+    sortable(
+      "#StepListWindow",
+      {
+        items: '.step',
+        forcePlaceholderSize: true,
+        placeholderClass: "sortable-ph",
+      }
+    );
+  }
+  handleClick(e){
+    if( e.target.classList.contains("step") ){
+        let steps = document.querySelectorAll(".step");
+        let n = 0;
+        for(n = 0; n<steps.length; n++){
+          if( steps[n] === e.target ) break;
+        }
+        this.StepManager.goto(n);
+    }
   }
   contextMenu(e){
     e.preventDefault();

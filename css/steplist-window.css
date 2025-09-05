@@ -17,3 +17,11 @@ div.step{
   margin-bottom: 1rem;
   background: white;
 }
+
+div.sortable-ph{
+  border: 3px solid red;
+  background: blue;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1rem;
+}

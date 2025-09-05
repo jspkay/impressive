@@ -76,7 +76,6 @@ export class ImpressiveCanvas{
       res = false;
     }
     this.element.style.scale = String(s);
-    console.log(s);
     return res;
   }
   getScale(){

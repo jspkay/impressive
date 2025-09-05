@@ -6,6 +6,8 @@ export class Mouse{
     this.clickStarted = {x:0, y:0};
     this.currentCoord = {x:0, y:0};
     this.clickFinished = {x:0, y:0};
+    this.dx = 0;
+    this.dy = 0;
     this.relativeElement = relativeElement ;
     console.log(relativeElement);
   }
@@ -42,6 +44,13 @@ export class Mouse{
   }
   mouseMove(e){
     let [x, y] = this.getCoordinates(e);
+    if(this.clicking){
+      this.dx = this.clickStarted.x - x;
+      this.dy = this.clickStarted.y - y;
+    }else{
+      this.dx = this.currentCoord.x - x;
+      this.dy = this.currentCoord.y - y;
+    }
     this.currentCoord = {x: x, y:y};
   }
   mouseUp(e){
