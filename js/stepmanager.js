@@ -1,3 +1,7 @@
+const html2canvas = await import(
+'../npm-modules/node_modules/html2canvas/dist/html2canvas.js'
+);
+
 export class StepManager{
   constructor(addStepElement){
     setTimeout(() => {
@@ -38,6 +42,11 @@ export class StepManager{
     let step = document.createElement("div");
 
     step.innerHTML = String(this.stepCount);
+    // window.html2canvas(this.canvas.containerElement).then((canvas) => {
+    // canvas.style.width = `${step.offsetWidth}px`;
+    // canvas.style.height = `${step.offsetHeight}px`;
+    // step.appendChild(canvas); 
+    // });
 
     step.classList.add("step");
 

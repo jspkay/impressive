@@ -1,4 +1,3 @@
-
 import {PanAndZoomTool, ContainerTool, SelectTool} from "./tools.js";
 
 export class ImpressiveCanvas{

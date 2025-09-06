@@ -114,11 +114,15 @@ export class StepListWindow{
     );
   }
   handleClick(e){
-    if( e.target.classList.contains("step") ){
+    if( 
+      e.target.classList.contains("step") || 
+      e.target.parentElement.classList.contains("step")
+    ){
+      let element = e.target.classList.contains("step") ? e.target : e.target.parentElement;
         let steps = document.querySelectorAll(".step");
         let n = 0;
         for(n = 0; n<steps.length; n++){
-          if( steps[n] === e.target ) break;
+          if( steps[n] === element ) break;
         }
         this.StepManager.goto(n);
     }
