@@ -1,0 +1,11 @@
+{
+  "name": "withgoldenlayout",
+  "version": "1.0.0",
+  "description": "> IMPORTANT: Current branch in development is `GoldenLayout`.",
+  "main": "browserify.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

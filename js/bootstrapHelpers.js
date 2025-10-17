@@ -28,7 +28,7 @@ export function makeFieldNumber(prop, value, alwaysPositive=false){
   <button class="btn-value-plus btn btn-outline-secondary" type="button" >+</button>
 </div>
 `
-  
+
 
   let input = root.querySelector("input");
   input.value = value;
@@ -37,24 +37,24 @@ export function makeFieldNumber(prop, value, alwaysPositive=false){
   });
 
   let addDeltaAlwaysPositive = function(e){
-      e.preventDefault();
-      input.value = Number(input.value) + e.deltaY;
-      if(input.value < 1){ input.value = 1; }
-      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    e.preventDefault();
+    input.value = Number(input.value) + e.deltaY;
+    if(input.value < 1){ input.value = 1; }
+    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
   }
   let removeOneAlwaysPositive = function(e){
-      input.value = Number(input.value) - 1;
-      if(input.value < 1){ input.value = 1; }
-      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    input.value = Number(input.value) - 1;
+    if(input.value < 1){ input.value = 1; }
+    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
   };
   let addDelta = function(e){
-      e.preventDefault();
-      input.value = Number(input.value) + e.deltaY;
-      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    e.preventDefault();
+    input.value = Number(input.value) + e.deltaY;
+    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
   }
   let removeOne = function(e){
-      input.value = Number(input.value) - 1;
-      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    input.value = Number(input.value) - 1;
+    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
   };
   let addOne = function(e){
     input.value = Number(input.value) + 1;
@@ -67,7 +67,7 @@ export function makeFieldNumber(prop, value, alwaysPositive=false){
   btn.addEventListener("click", addOne);
   // when scrolling, also the plus button can go to <0
   if(alwaysPositive) btn.addEventListener("wheel", addDeltaAlwaysPositive);
-  else btn.addEventListener("wheel", addDelta);
+    else btn.addEventListener("wheel", addDelta);
 
   // create the event listener for the minus button
   btn = root.querySelector(".btn-value-minus");
@@ -93,13 +93,96 @@ export function makeContextMenu(elements){
     a.classList.add("list-group-item", "list-group-item-action");
     a.innerHTML = label;
     a.addEventListener(
-    "click", (e)=>{ listener(e); menu.remove(); },
+      "click", (e)=>{ listener(e); menu.remove(); },
     );
     list.appendChild(a);
   }
+  // TODO: make another listener to mousemove, so that 
+  // when the mouse is inside the box `list-group`, the 
+  // mouseleave doesn't destroy the element.
+  // Or actually, we can just fuck about mouseleave 
+  // and be sure the element exists in the ...
   menu.addEventListener("mouseleave", (e) => {
     menu.remove();
     menu = undefined;
   });
   return menu;
+}
+
+export function makeForm(fields){
+  let form = document.createElement("form");
+
+  for( const [label, opts] of Object.entries(fields) ){
+    let div = document.createElement("div");
+    div.innerHTML = `
+      <label>${label}</label>
+      <input type=${opts.type} class="form-control" id=${opts.id}> `;
+    form.appendChild(div);
+  }
+
+  return form;
+}
+
+export class Modal{
+
+  constructor(title, content, primaryButtonText, opts){
+    let modal = document.createElement("div");
+    modal.classList.add("modal");
+    modal.setAttribute("tabindex","-1");
+    modal.innerHTML = `
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">${title}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">${primaryButtonText}</button>
+          </div>
+        </div>
+      </div> `;
+    if(content instanceof HTMLElement)
+      modal.querySelector(".modal-body").appendChild(content);
+    else
+      modal.querySelector(".modal-body").innerHTML = content;
+
+    this.modalElement = modal;
+    if(opts == undefined){
+      opts = {
+        backdrop: true,
+        focus: true,
+        keyboard: true,
+      }
+    }
+    this.modal = new bootstrap.Modal(
+      modal,
+      opts
+    );
+  }
+  async takeResult(fn){
+    return new Promise( (resolve, reject) => {
+      this.modalElement.querySelector(".btn-primary").addEventListener(
+        "click", (e) => {
+            let value = fn(e);
+            resolve({cancelled: false, value: value });
+            this.modal.hide();
+          }
+      );
+      this.modalElement.querySelector(".btn-secondary").addEventListener(
+        "click", (e) => {
+          resolve({cancelled: true, });
+        }
+      );
+    });
+  }
+  show(){
+    this.modal.show();
+  }
+  dispose(){
+    this.modal.dispose();
+    this.modalElement.remove();
+  }
 }

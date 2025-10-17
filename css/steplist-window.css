@@ -16,6 +16,8 @@ div.step{
   height: 10rem;
   margin-bottom: 1rem;
   background: white;
+  text-align: center;
+  align-content: center;
 }
 
 div.sortable-ph{

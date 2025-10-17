@@ -14,10 +14,23 @@ const Modes = {
   PRESENTATION: 1,
 };
 
-import {init as menuInit} from "./filemenu.js";
+import {init as menuInit} from "./menubar.js";
 
 // Main setup
 logging.debug("Setting up impressive...");
+
+
+/* TODO:
+ * - impress.js (to allow presentation mode) 
+ * - You are missing an "animation" window!!!
+ * - Save file (to save it in localstorage)
+ * - Download (to export the html and actually download it)
+ * - Open (to "upload" a file to visualize it and edit) 
+ * - Add a resolution for the presentation ( same as impress.js - check how and why they do it!)
+ * - Figure out a way to preview your presentation in the StepListWindow!!! (You need a resolution)
+ * - Style 
+ * - Webpack
+  * */
 
 function init() {
   console.log("Hi everybody!!!"); 
