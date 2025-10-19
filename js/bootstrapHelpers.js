@@ -15,7 +15,7 @@ export function makeField(prop, value){
 
   return root;
 }
-export function makeFieldNumber(prop, value, alwaysPositive=false){
+export function makeFieldNumber(prop, value, alwaysPositive=false, delta=null){
   let root = document.createElement("div");
   root.classList.add("input-group", "mb-3");
 
@@ -38,7 +38,7 @@ export function makeFieldNumber(prop, value, alwaysPositive=false){
 
   let addDeltaAlwaysPositive = function(e){
       e.preventDefault();
-      input.value = Number(input.value) + e.deltaY;
+      input.value = Number(input.value) + (delta==null ? e.deltaY : Math.sign(e.deltaY) * delta);
       if(input.value < 1){ input.value = 1; }
       window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
   }
@@ -49,7 +49,7 @@ export function makeFieldNumber(prop, value, alwaysPositive=false){
   };
   let addDelta = function(e){
       e.preventDefault();
-      input.value = Number(input.value) + e.deltaY;
+      input.value = Number(input.value) + (delta==null ? e.deltaY : Math.sign(e.deltaY) * delta);
       window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
   }
   let removeOne = function(e){

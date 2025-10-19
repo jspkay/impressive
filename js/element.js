@@ -99,8 +99,8 @@ export class Container extends Element{
       height: "pnumber",
       fillColor: "color",
       borderColor: "color",
-      borderThickness: "pnumber",
-      borderRadius: "pnumber",
+      borderThickness: "pnumberD1",
+      borderRadius: "pnumberD1",
     };
     return Object.assign({}, parentList, list);
   }
@@ -114,6 +114,12 @@ export class Container extends Element{
         let h = this.getHeight();
         this.setSize(value, h);
         break;
+      case "borderThickness":
+	this.setBorderThickness(value);
+	break;
+      case "borderRadius":
+	this.setBorderRadius(value);
+	break;
       default:
         super.setProperty(prop, value);
         break;

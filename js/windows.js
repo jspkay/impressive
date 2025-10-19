@@ -36,6 +36,9 @@ export class PropertiesWindow{
         case "pnumber":
           element = makeFieldNumber(property, value, true);
           break;
+	case "pnumberD1":
+          element = makeFieldNumber(property, value, true, 1);
+	  break;
         default:
           element = makeField(property, value);
           break;
