@@ -19,15 +19,18 @@
     <!-- bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <link href="node_modules/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" >
 
     <!-- goldenlayout -->
     <script type="text/javascript" src="./bundle.js"></script>
-    <link async type="text/css" rel="stylesheet" href="https://golden-layout.com/files/latest/css/goldenlayout-base.css" />
+    <!-- <link async type="text/css" rel="stylesheet" href="https://golden-layout.com/files/latest/css/goldenlayout-base.css" /> -->
+    <link async type="text/css" rel="stylesheet" href="/css/goldenlayout-base.css" />
+
     <!-- goldenlayout theme -->
     <link async type="text/css" rel="stylesheet" href="https://golden-layout.com/files/latest/css/goldenlayout-light-theme.css" />
 
     <!-- sortable -->
-    <script type="module" src="./npm-modules/node_modules/html5sortable/dist/html5sortable.js"></script>
+    <script type="module" type="text/js" src="/node_modules/html5sortable/dist/html5sortable.js"></script>
 
     <!-- impressive --> 
     <script type="module" src="js/impressive.js"></script>
@@ -51,7 +54,7 @@
       </div>
       <div class="dropdown">
         <button class="item btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" >Tools</button>
-        <ul id="FileMenu" class="dropdown-menu">
+        <ul id="ToolsMenu" class="dropdown-menu">
           <li><div class="dropdown-item" >Container</div></li>
           <li><div class="dropdown-item" >Pan and Zoom</div></li>
           <li><div class="dropdown-item" >Select</div></li>
@@ -59,7 +62,7 @@
       </div>
       <div class="dropdown">
         <button class="item btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" >Windows</button>
-        <ul id="FileMenu" class="dropdown-menu">
+        <ul id="WindowsMenu" class="dropdown-menu">
           <li><div class="dropdown-item" >Properties</div></li>
           <li><div class="dropdown-item" >Step List</div></li>
           <li><div class="dropdown-item" >Transitions</div></li>
@@ -67,13 +70,19 @@
       </div>
       <div class="dropdown">
         <button class="item btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" >Layout</button>
-        <ul id="FileMenu" class="dropdown-menu">
+        <ul id="LayotMenu" class="dropdown-menu">
           <li><div class="dropdown-item" >Save Current Layout</div></li>
         </ul>
-
       </div>
     </div>
-    <div id="Toolbar" ></div>
+    <div id="Toolbar" >
+	<div class="btn-group" role="group" aria-label="Basic example">
+	    <button id="tb-select" type="button" class="btn btn-primary"> <i class="bi bi-cursor-fill"></i></button>
+	    <button id="tb-move" type="button" class="btn btn-primary"> <i class="bi bi-arrows-move"></i></button>
+	    <button id="tb-rect" type="button" class="btn btn-primary"> <i class="bi bi-app"></i></button>
+	    <button id="tb-text" type="button" class="btn btn-primary"> <i class="bi bi-file-font"></i></button>
+	</div>
+    </div>
     <div id="mainArea" ></div>
   </body>
 </html>

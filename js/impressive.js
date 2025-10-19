@@ -15,6 +15,7 @@ const Modes = {
 };
 
 import {init as menuInit} from "./filemenu.js";
+import {init as toolbarInit} from "./toolbar.js";
 
 // Main setup
 logging.debug("Setting up impressive...");
@@ -68,6 +69,7 @@ function init() {
   })
 
   menuInit();
+  toolbarInit();
 }
 
 window.impressive = {
