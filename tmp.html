@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <!-- sortable -->
+    <script type="module" src="./npm-modules/node_modules/html5sortable/dist/html5sortable.js"></script>
+
+    <style>
+    .sortable > div{
+      width: 100px;
+      height: 100px;
+      background: red;
+      margin: 20px;
+      padding: 10px;
+    }
+    </style>
+
+  </head>
+  <body>
+    <div class="sortable">
+      <div class="ciao">0</div>
+      <div class="ciao">1</div>
+      <div class="ciao">2</div>
+      <div class="ciao">3</div>
+      <div class="ciao">4</div>
+      <div class="ciao">5</div>
+      <div class="ciao">6</div>
+      <div class="ciao">7</div>
+      <div class="ciao">8</div>
+      <div class="ciao">9</div>
+      <div class="ciao">10</div>
+      <div >7</div>
+      <div >8</div>
+      <div >9</div>
+      <div >10</div>
+    </div>
+    <style>
+      div.sortable-placeholder{
+        background: white !important;
+        border: solid 5px red;
+        height: 90px;
+        width: 90px;
+      }
+    </style>
+    <script>
+    document.body.onload = function (){
+      let elements = document.querySelector(".sortable").children;
+      console.log(elements);
+      let r = 255 / 7, g = 255 / 7 * 2, b = 255/7*3;
+      console.log(elements.length);
+      for(let i = 0; i<elements.length; i++){
+        elements[i].style.background = `rgb(${r}, ${g}, ${b})`;
+        console.log(r, g, b);
+        r += 30;
+        g += 30;
+        b += 30;
+        r = r%255;
+        g = g % 255;
+        b = b % 255;
+        }
+      function clickMe(element, i){
+        return  new Promise(
+          ( resolve, reject ) => {
+            element.addEventListener("click", (e) => {
+              resolve(i);
+            }, {once: true});
+          }
+        );
+      }
+      for(let i=0; i<elements.length; i++){
+        let value = clickMe( elements[i], i );
+        value.then( (value) => {
+          // console.log(value);
+        })
+      }
+      async function doit(){
+        for(let i=0; i<elements.length; i++){
+          let value = await clickMe( elements[i], i );
+          console.log(value);
+          };
+      }
+      doit();
+    };
+    </script>
+  </body>
+</html>

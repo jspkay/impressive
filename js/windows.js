@@ -140,7 +140,13 @@ export class StepListWindow{
       this.menu = makeContextMenu({
         Delete: function(event){
           this.StepManager.deleteStep(e.target);
-        }.bind(this)
+        }.bind(this),
+        Rename: function(event){
+          this.StepManager.renameStep(e.target);
+        }.bind(this),
+        "Redefine Position...": function(event){
+          alert("not implemented yet");
+        },
       });
       this.menu.style = `position: fixed; left: ${e.pageX}px; top: ${e.pageY}px`;
       document.body.appendChild(this.menu);

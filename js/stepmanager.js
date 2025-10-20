@@ -2,6 +2,8 @@ const html2canvas = await import(
 '../npm-modules/node_modules/html2canvas/dist/html2canvas.js'
 );
 
+import {Modal, makeForm} from "./bootstrapHelpers.js";
+
 export class StepManager{
   constructor(addStepElement){
     setTimeout(() => {
@@ -49,6 +51,8 @@ export class StepManager{
     // });
 
     step.classList.add("step");
+    let id = Math.floor( Math.random() * 1e5 );
+    step.setAttribute("id", `impDef${id}`)
 
     step.dataset.x = currentPos[0];
     step.dataset.y = currentPos[1];
@@ -60,14 +64,35 @@ export class StepManager{
 
     window.layout.eventHub.emit("stepCreated",{});
   }
+  findStepIndex(stepElement){
+    let steps = document.querySelectorAll(".step");
+    for(let i = 0; i<steps.length; i++)
+      if(steps[i] === stepElement) return i;
+
+    throw new Error("Couldn't find step with element", stepElement);
+  }
+  async renameStep(stepElement){
+    let index = this.findStepIndex(stepElement);
+    let form = makeForm({
+      "New Name:": {type: "text", id:"renewStep"},
+    });
+    let modal = new Modal("Rename Step", form, "Save");
+    modal.show();
+
+    let value = await modal.takeResult( 
+      (e) => {
+        return form.querySelector("#renewStep").value;
+      }
+    )
+    if( !value.cancelled)
+      stepElement.innerHTML = value.value;
+    modal.dispose();
+  }
   deleteStep(stepElement){
     console.log(stepElement);
-
+    let index = this.findStepIndex(stepElement);
     let steps = document.querySelectorAll(".step");
-    let index = 0;
-    let found = false;
-    for(let i = 0; !found && i<steps.length; i++)
-      if(steps[i] === stepElement) found = true;
+
     stepElement.remove();
     this.stepCount--;
   }
