@@ -1,6 +1,6 @@
-const html2canvas = await import(
-'../npm-modules/node_modules/html2canvas/dist/html2canvas.js'
-);
+// const html2canvas = await import(
+// '../npm-modules/node_modules/html2canvas/dist/html2canvas.js'
+// );
 
 import {Modal, makeForm} from "./bootstrapHelpers.js";
 
