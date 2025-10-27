@@ -15,3 +15,7 @@ overflow: hidden;
 div.impressiveContainer{
   background: red;
 }
+
+div.impressiveImage{
+  background: blue;
+}

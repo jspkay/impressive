@@ -1,13 +1,15 @@
 import {Modal, makeForm} from "./bootstrapHelpers.js";
-import {impress} from "./impress.text.js";
+// import {impress} from "./impress.text.js";
+var impress = "<script src='impress.js/js/impress.new.js'></script>"
 
 export function download(){
   // gather all the elements on the canvas 
-  let canvas = document.querySelector("#impressiveCanvas");
+  let canvas = document.querySelector("#impressiveCanvas").cloneNode(true);
   // remove all the current scale and position, so that it doesn't mess with impress
   delete canvas.dataset.x;
   delete canvas.dataset.y;
   delete canvas.dataset.scale;
+  canvas.style = "position: absolute; top: 50%; left: 50%";
 
   // remove the add button
   let steps = document.querySelector("#StepListWindow").cloneNode(true);
@@ -25,9 +27,9 @@ export function download(){
     let scale = stepsElements[i].dataset.scale;
     let x = stepsElements[i].dataset.x;
     let y = stepsElements[i].dataset.y
-    stepsElements[i].dataset.scale = 1/scale;
-    stepsElements[i].dataset.x = -x;
-    stepsElements[i].dataset.y = -y;
+    stepsElements[i].dataset.scale = scale;
+    stepsElements[i].dataset.x = x;
+    stepsElements[i].dataset.y = y;
   }
 
 
@@ -38,7 +40,7 @@ export function download(){
   <body>
     <div id="impress" 
       data-width="${W}"
-      data-height="${1080}"
+      data-height="${H}"
       data-transition-duration="250"
     >
 
@@ -46,7 +48,8 @@ export function download(){
     ${steps.outerHTML}
 
 
-    <script>${impress}</script>
+    <!-- <script>${impress}</script> -->
+    ${impress}
     <script>impress().init();</script>
   </body>
 </html>

@@ -1,3 +1,5 @@
+import {download} from "./filemanager.js"
+
 export function init() {
     let buttons = document.querySelectorAll("button.item");
     for(let bt of buttons){
@@ -26,7 +28,7 @@ function initFile(element){
 	switch(name){
 	    case "Download":
 		actfn = () => {
-		    alert("Download");
+		    download()
 		};
 	    case "New...":
 	    default:

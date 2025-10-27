@@ -185,3 +185,47 @@ export class Container extends Element{
   }
 }
 
+export class Image extends Container{
+  constructor(element){
+    super(element);
+  }
+  static tranfromWrtRoot(x, y){
+    let dataset = document.querySelector(`#${this.rootId}`).dataset;
+    x = x - Number( dataset.x );
+    y = y - Number( dataset.y );
+    return [x, y];
+  }
+  static create(x, y, rootId){
+    this.rootId = rootId;
+    let element = document.createElement("div"); // creating container
+    element.classList.add("impressiveImage"); // appropriate style
+    element.style.position = "absolute"; // prevents overlapping
+    [x, y] = Image.tranfromWrtRoot(x, y);
+    element.dataset.x = x; // position is redundant, for easy retrival
+    element.dataset.y = y;
+    element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
+    document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
+    return new Image(element);
+  }
+  getPropertiesList(){
+    let parentList = super.getPropertiesList();
+    let list = {
+      image: "string",
+      offsetX: "number",
+      offsetY: "number",
+    }
+    return Object.assign({}, parentList, list);
+  }
+  getProperties(){
+    let element = this.element;
+    return Object.assign(
+      {},
+      super.getProperties(), 
+      {
+	image: "",
+	offsetX: 0,
+	offsetY: 0
+      }
+    )
+  }
+}

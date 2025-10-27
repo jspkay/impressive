@@ -7,6 +7,11 @@ div.lm_content:has( #impressiveCanvas ){
   width: 100%;
   background: white repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgSURBVHgB7cAxDQAACAOwBeVI58HDnjb7UjIBAAAAyg6hHgQDoYSOAQAAAABJRU5ErkJggg==");
   background: transparent;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: top left;
 }
 
 #origin{

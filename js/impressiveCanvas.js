@@ -1,4 +1,4 @@
-import {PanAndZoomTool, ContainerTool, SelectTool} from "./tools.js";
+import {PanAndZoomTool, ContainerTool, SelectTool, ImageTool} from "./tools.js";
 
 export class ImpressiveCanvas{
   constructor(container, componentState){
@@ -47,6 +47,9 @@ export class ImpressiveCanvas{
       case "Select":
         this.mouseHandling = new SelectTool(this, this.containerElement, this.element);
         break;
+      case "Image":
+        this.mouseHandling = new ImageTool(this, this.containerElement, this.element);
+	break;
       default:
         alert("Tool "+event.newTool+" not impremented yet...");
         this.mouseHandling = {
@@ -122,11 +125,13 @@ export class ImpressiveCanvas{
      *    is equally spaced to the right and left, thus we divide by 2.
      * */
     let scale = this.getScale();
+    let offStatX = this.element.offsetWidth / 2;
+    let offStatY = this.element.offsetHeight / 2;
     let offX = this.element.offsetWidth * (1/scale - 1) / 2;
     let offY = this.element.offsetHeight * (1/scale - 1) / 2;
     return [ 
-      x / scale - offX,
-      y / scale - offY,
+      (x - offStatX) / scale - offX,
+      (y - offStatY) / scale - offY,
     ]
   }
   // All the other methods are needed to interact with the elements 

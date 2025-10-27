@@ -1,5 +1,5 @@
 import {Mouse} from "./mouse.js";
-import {Container} from "./element.js";
+import {Container, Image} from "./element.js";
 
 class Tool{
   constructor(canvas, trigger, element){
@@ -177,4 +177,28 @@ export class SelectTool extends Tool{
     }
   }
   wheel(e){}
+}
+
+export class ImageTool extends Tool{
+    mouseDown(e){
+	this.mouse.mouseDown(e)
+	let [x, y] = this.canvas.triggerCoordinateToCanvas(
+	    this.mouse.clickStarted.x, 
+	    this.mouse.clickStarted.y 
+	);
+	this.newElement = Image.create(
+	    x, y,
+	    this.element.getAttribute("id")
+	);
+    }
+    mouseUp(e){
+      this.newElement.setSize(100, 100);
+      window.layout.eventHub.emit(
+	"selectElement", {element:this.newElement}
+      );
+      this.newElement = null;
+    }
+    mouseMove(e){
+
+    }
 }
