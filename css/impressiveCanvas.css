@@ -8,3 +8,12 @@ div.lm_content:has( #impressiveCanvas ){
   background: white repeat url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgSURBVHgB7cAxDQAACAOwBeVI58HDnjb7UjIBAAAAyg6hHgQDoYSOAQAAAABJRU5ErkJggg==");
   background: transparent;
 }
+
+#origin{
+  background: #000;
+  width: 2em;
+  height: 2em;
+  border-radius: 2em;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}

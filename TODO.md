@@ -1,0 +1,4 @@
+-[ ] Fix sortable 
+-[ ] Verify compatilibity with custom version of impress.js
+-[ ] Implement image tool 
+-[ ] Implement text tool

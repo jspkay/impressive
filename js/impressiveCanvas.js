@@ -2,24 +2,35 @@ import {PanAndZoomTool, ContainerTool, SelectTool} from "./tools.js";
 
 export class ImpressiveCanvas{
   constructor(container, componentState){
+    // take the root 
     window.impressive.canvas = this;
     this.containerElement = container.getElement();
+
+      // create the canvas
     this.element = document.createElement("div");
     this.element.setAttribute("id", "impressiveCanvas");
     this.containerElement.append(this.element);
+    
+    // create an origin for reference
+    this.origin = document.createElement("div");
+    this.origin.setAttribute("id", "origin");
+    this.element.append(this.origin);
 
+    // visual effects
     this.containerElement.style.backgroundPositionX = "0px";
 
+    // prepare the initial position 
     this.dataset = this.element.dataset;
     this.dataset.x = 0;
     this.dataset.y = 0;
     this.element.style.scale = 1;
 
+    // initialize the active tool
     this.mouseHandling = new ContainerTool(this, container.getElement(), this.element);
 
     window.impressiveCanvas = this;
 
-    // Events 
+    // Events management
     container.layoutManager.eventHub.on("toolChanged", this.changeTool.bind(this));
 
   }
@@ -60,7 +71,8 @@ export class ImpressiveCanvas{
   }
   setPosition(x, y){
     console.log("setting Position to ", x, y);
-    this.element.style.transform = `translate(${x}px,${y}px)`;
+    let str = `translate(${x}px,${y}px)`;
+    this.element.style.transform = str;
     this.element.dataset.x = x;
     this.element.dataset.y = y;
   }
@@ -75,6 +87,7 @@ export class ImpressiveCanvas{
       res = false;
     }
     this.element.style.scale = String(s);
+    this.origin.style.scale = String(1/s);
     return res;
   }
   getScale(){
