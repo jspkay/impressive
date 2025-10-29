@@ -6,17 +6,36 @@ export function init() {
 	let fn = (e) => {
 	    alert("not implemented yet...");
 	};
+        let callback = function(newTool){
+	  return function(e){
+	    let active = document.querySelector(".impressiveActiveTool");
+	    active.classList.remove("btn-success");
+	    active.classList.add("btn-primary");
+	    active.classList.remove("impressiveActiveTool");
+
+	    e.currentTarget.classList.add("btn-success", "impressiveActiveTool");
+	    e.currentTarget.classList.remove("btn-primary");
+	    window.layout.eventHub.emit(
+	      "toolChanged",
+	      {newTool: newTool});
+	  }
+	};
 	switch(id){
 	    case "tb-select":
-		fn = () => {window.layout.eventHub.emit("toolChanged", {newTool: "Select"});}
+		fn = callback("Select");
 		break;
 	    case "tb-move":
-		fn = () => {window.layout.eventHub.emit("toolChanged", {newTool: "PanAndZoom"});}
+		fn = callback("PanAndZoom");
 		break;
 	    case "tb-rect":
-		fn = () => {window.layout.eventHub.emit("toolChanged", {newTool: "Container"});}
+		fn = callback("Container");
+		break;
+	    case "tb-image":
+		fn = callback("Image");
 		break;
 	    case "tb-text":
+	      fn = callback("Text");
+	      break;
 	    default:
 		break;
 	}

@@ -1,4 +1,4 @@
-import {PanAndZoomTool, ContainerTool, SelectTool, ImageTool} from "./tools.js";
+import {PanAndZoomTool, ContainerTool, SelectTool, ImageTool, TextTool} from "./tools.js";
 
 export class ImpressiveCanvas{
   constructor(container, componentState){
@@ -49,6 +49,9 @@ export class ImpressiveCanvas{
         break;
       case "Image":
         this.mouseHandling = new ImageTool(this, this.containerElement, this.element);
+	break;
+      case "Text":
+        this.mouseHandling = new TextTool(this, this.containerElement, this.element);
 	break;
       default:
         alert("Tool "+event.newTool+" not impremented yet...");
@@ -125,13 +128,22 @@ export class ImpressiveCanvas{
      *    is equally spaced to the right and left, thus we divide by 2.
      * */
     let scale = this.getScale();
-    let offStatX = this.element.offsetWidth / 2;
+    // static offest (due to the fact that the canvSe is positioned with top:50%
+    // and width: 50%)
+    let offStatX = this.element.offsetWidth / 2; 
     let offStatY = this.element.offsetHeight / 2;
-    let offX = this.element.offsetWidth * (1/scale - 1) / 2;
+    // dynamic offset transforms the point from the coordinate of the trigger to
+    // the canvas
+    let offX = this.element.offsetWidth * (1/scale - 1) / 2; // dynamic offset
     let offY = this.element.offsetHeight * (1/scale - 1) / 2;
+    // finally, we have a component dictated by the relative displacement of the
+    // canvas
+    let disX = Number(this.element.dataset.x);
+    let disY = Number(this.element.dataset.y);
+
     return [ 
-      (x - offStatX) / scale - offX,
-      (y - offStatY) / scale - offY,
+      x / scale - offX - offStatX - disX,
+      y / scale - offY - offStatY - disY,
     ]
   }
   // All the other methods are needed to interact with the elements 

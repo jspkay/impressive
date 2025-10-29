@@ -1,5 +1,5 @@
 import {Mouse} from "./mouse.js";
-import {Container, Image} from "./element.js";
+import {Container, Image, Text} from "./element.js";
 
 class Tool{
   constructor(canvas, trigger, element){
@@ -38,7 +38,7 @@ export class PanAndZoomTool extends Tool{
     this.initialPos = this.canvas.getPosition();
   }
   mouseMove(e){
-  this.mouse.mouseMove(e);
+    this.mouse.mouseMove(e);
     if(this.mouse.clicking){
       let scale = this.canvas.getScale();
       let dx = this.mouse.currentCoord.x - this.mouse.clickStarted.x;
@@ -76,7 +76,7 @@ export class ContainerTool extends Tool{
     let [x, y] = this.canvas.triggerCoordinateToCanvas(
       this.mouse.clickStarted.x,
       this.mouse.clickStarted.y 
-    )
+    );
     this.newElement = Container.create(
       x,
       y,
@@ -88,12 +88,12 @@ export class ContainerTool extends Tool{
     this.mouse.mouseMove(e);
     if(this.mouse.clicking){
       let [x, y] = this.canvas.triggerCoordinateToCanvas(
-        this.mouse.currentCoord.x,
-        this.mouse.currentCoord.y 
-      )
+	this.mouse.currentCoord.x,
+	this.mouse.currentCoord.y 
+      );
       this.newElement.setSizeFromPos(
-        x,
-        y,
+	x,
+	y,
       );
     }
   }
@@ -102,8 +102,8 @@ export class ContainerTool extends Tool{
     this.newElement.finish();
     if(! this.newElement.tooSmall) {
       window.layout.eventHub.emit(
-        "selectElement", {element:this.newElement});
-      }
+	"selectElement", {element:this.newElement});
+    }
     this.newElement = null;
   }
   wheel(e){
@@ -112,38 +112,59 @@ export class ContainerTool extends Tool{
 
 export class SelectTool extends Tool{
   mouseDown(e){
-
+    console.log(e)
+    if(
+      // stop if im selecting the canvas itself
+      e.target == window.impressiveCanvas.element || 
+      e.target == window.impressiveCanvas.containerElement
+    ) {
+      window.layout.eventHub.emit(
+	"selectElement", {element: null});
+      this.selected = null;
+      return;
+    }
+    if (
+      this.selected === e.target  // or the active element
+    )
+      return
     this.selected = e.target;
-    let container = new Container(e.target);
+
+    let el = e.target.classList;
+    let selElement = new Container(e.target);
+    if( el.contains("impressiveImage") ){
+      selElement = new Image(e.target);
+    }else if(el.contains("impressiveText") ){
+      selElement = new Text(e.target);
+    }
     window.layout.eventHub.emit(
-      "selectElement", {element: container});
+      "selectElement", {element: selElement});
 
     let move = function(e){
-          let [x, y] = container.getPosition();
-          container.setPosition(x+e.dx, y+e.dy);
-        }
+      let [x, y] = container.getPosition();
+      container.setPosition(x+e.dx, y+e.dy);
+    }
     let int = interact(e.target);
     int.resizable({
       edges:{
-        top: true, bottom:true, left:true, right:true,
+	top: true, bottom:true, left:true, right:true,
       },
       onstart: function(e){
-        this.resizing = e.target;
-        this.draggable = e.target;
+	this.resizing = e.target;
+	this.draggable = e.target;
       }.bind(this),
       onmove: (e)=>{
-        let [w, h] = container.getSize();
-        console.log(e.rect);
-        console.log(e.deltaRect);
-        this.canvas.setContainerSizeInteract(
-          container, 
-          e.rect, 
-          e.deltaRect,
-        );
-        // container.setSize(dx ? w+e.dx : w, dy ? h+e.dy : h);
+	let [w, h] = container.getSize();
+	console.log(e.rect);
+	console.log(e.deltaRect);
+	this.canvas.setContainerSizeInteract(
+	  container, 
+	  e.rect, 
+	  e.deltaRect,
+	);
+	// container.setSize(dx ? w+e.dx : w, dy ? h+e.dy : h);
       },
       onend: function(e){
-        this.resizing = undefined;
+	this.resizing = undefined;
       }.bind(this),
     });
   }
@@ -164,15 +185,15 @@ export class SelectTool extends Tool{
       let container = new Container(element);
       let int = interact(element);
       int.draggable({
-        onstart: function(e){
-          this.dragging = true;
-        }.bind(this),
-        onmove: function(e){
-          this.canvas.setContainerPositionDelta( container, e.dx, e.dy );
-        }.bind(this),
-        onend: function(e){
-          this.dragging = false;
-        }.bind(this),
+	onstart: function(e){
+	  this.dragging = true;
+	}.bind(this),
+	onmove: function(e){
+	  this.canvas.setContainerPositionDelta( container, e.dx, e.dy );
+	}.bind(this),
+	onend: function(e){
+	  this.dragging = false;
+	}.bind(this),
       });
     }
   }
@@ -180,25 +201,65 @@ export class SelectTool extends Tool{
 }
 
 export class ImageTool extends Tool{
-    mouseDown(e){
-	this.mouse.mouseDown(e)
-	let [x, y] = this.canvas.triggerCoordinateToCanvas(
-	    this.mouse.clickStarted.x, 
-	    this.mouse.clickStarted.y 
-	);
-	this.newElement = Image.create(
-	    x, y,
-	    this.element.getAttribute("id")
-	);
-    }
-    mouseUp(e){
-      this.newElement.setSize(100, 100);
-      window.layout.eventHub.emit(
-	"selectElement", {element:this.newElement}
-      );
-      this.newElement = null;
-    }
-    mouseMove(e){
+  mouseDown(e){
+    this.mouse.mouseDown(e)
+    let [x, y] = this.canvas.triggerCoordinateToCanvas(
+      this.mouse.clickStarted.x, 
+      this.mouse.clickStarted.y 
+    );
+    this.newElement = Image.create(
+      x, y,
+      this.element.getAttribute("id")
+    );
+  }
+  mouseUp(e){
+    this.newElement.setSize(100, 100);
+    window.layout.eventHub.emit(
+      "selectElement", {element:this.newElement}
+    );
+    this.newElement = null;
+  }
+  mouseMove(e){
 
+  }
+}
+
+export class TextTool extends Tool{
+  mouseDown(e){
+    this.mouse.mouseDown(e);
+    let [x, y] = this.canvas.triggerCoordinateToCanvas(
+      this.mouse.clickStarted.x, 
+      this.mouse.clickStarted.y 
+    );
+    this.newElement = Text.create(
+      x,
+      y,
+    );
+    this.newElement.tooSmall = true;
+  }
+  mouseMove(e){
+    this.mouse.mouseMove(e);
+    if(this.mouse.clicking){
+      let [x, y] = this.canvas.triggerCoordinateToCanvas(
+	this.mouse.currentCoord.x,
+	this.mouse.currentCoord.y 
+      );
+      this.newElement.setSizeFromPos(
+	x,
+	y,
+      );
     }
+
+  }
+  mouseUp(e){
+    this.mouse.mouseUp(e);
+    this.newElement.finish();
+    if(! this.newElement.tooSmall) {
+      window.layout.eventHub.emit(
+	"selectElement", {element:this.newElement});
+    }
+    this.newElement = null;
+
+  }
+  wheel(){}
 }

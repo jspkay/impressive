@@ -46,6 +46,7 @@ function init() {
         type: 'component',
         componentName: 'StepListWindow',
         componentState: { label: 'Steps' },
+	size: "10%",
         title: "Step list",
       },{
         type: 'component',

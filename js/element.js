@@ -1,16 +1,27 @@
+import {pfx} from "./utils.js";
+
+//
 // The class element fives an api to put elements on the canvas.
 // It takes care of constructing elements and adding them to the DOM.
 // On top of that, it gives access to the basic properties of every element
 // of which we compose our presentation
 class Element{
   constructor(element){
-    if(this.constructor == Element){
+    if(element.constructor == Element){
       throw new Error("Abstract class cannot be instantiated!");
     }
     this.element = element;
     this.x = Number(element.dataset.x);
     this.y = Number(element.dataset.y);
     this.tooSmall = false; // Does this stay ?
+  }
+  appendChild(element){
+    this.element.appendChild(element);
+  }
+  css( prop, value ) {
+    // TODO: implement this function properly using pfx
+    // from impress.js (now it's defined in utils.js)
+    this.element.cssText += `${prop}: ${value}`;
   }
   setPosition(x, y, sticky = false){
     if(sticky) {
@@ -28,16 +39,16 @@ class Element{
   setProperty(prop, value){
     switch(prop){
       case "x":
-        let y = this.getPosition()[1];
-        this.setPosition(value, y);
-        break;
+	let y = this.getPosition()[1];
+	this.setPosition(value, y);
+	break;
       case "y":
-        let x = this.getPosition()[0];
-        this.setPosition(x, value);
-        break;
+	let x = this.getPosition()[0];
+	this.setPosition(x, value);
+	break;
       default:
-        console.log("Property "+ prop + " is not part of " + this);
-        break;
+	console.log("Property "+ prop + " is not part of " + this);
+	break;
     }
   }
   getProperties(){
@@ -52,6 +63,14 @@ class Element{
   destroy(){
     this.element.remove();
     delete this.element;
+  }
+  id(str){
+    if(str == null){
+      // return the id 
+      return this.element.getAttribute("id");
+    }
+
+    this.element.setAttribute("id", str);
   }
   _setPosition(x, y){
     this.element.style.transform = `translate(${x}px, ${y}px)`;
@@ -71,21 +90,30 @@ export class Container extends Element{
   }
   static tranfromWrtRoot(x, y){
     let dataset = document.querySelector(`#${this.rootId}`).dataset;
+    let scale = window.impressiveCanvas.getScale();
     x = x - Number( dataset.x );
     y = y - Number( dataset.y );
     return [x, y];
   }
-  static create(x, y, rootId){
+  static create(x, y, rootId, father){
+    if(father == null)
+      father = new Element(document.querySelector(`#${rootId}`));
+
     this.rootId = rootId;
     let element = document.createElement("div"); // creating container
     element.classList.add("impressiveContainer"); // appropriate style
     element.style.position = "absolute"; // prevents overlapping
-    [x, y] = Container.tranfromWrtRoot(x, y);
+    // [x, y] = Container.tranfromWrtRoot(x, y);
     element.dataset.x = x; // position is redundant, for easy retrival
     element.dataset.y = y;
     element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
-    document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
-    return new Container(element);
+    father.appendChild(element); // put it on the display
+
+    this.children = [];
+
+    let res = new Container(element);
+
+    return res;
   }
   static fromElement(element){
     let x = Number(element.dataset.x);
@@ -107,13 +135,13 @@ export class Container extends Element{
   setProperty(prop, value){
     switch(prop){
       case "height": 
-        let w = this.getWidth();
-        this.setSize(w, value);
-        break;
+	let w = this.getWidth();
+	this.setSize(w, value);
+	break;
       case "width": 
-        let h = this.getHeight();
-        this.setSize(value, h);
-        break;
+	let h = this.getHeight();
+	this.setSize(value, h);
+	break;
       case "borderThickness":
 	this.setBorderThickness(value);
 	break;
@@ -121,8 +149,8 @@ export class Container extends Element{
 	this.setBorderRadius(value);
 	break;
       default:
-        super.setProperty(prop, value);
-        break;
+	super.setProperty(prop, value);
+	break;
     }
   }
   getSize(){
@@ -135,7 +163,7 @@ export class Container extends Element{
     this.element.style.width = `${w}px`;
   }
   setSizeFromPos(px, py){
-    [px, py] = Container.tranfromWrtRoot(px, py);
+    // [px, py] = Container.tranfromWrtRoot(px, py);
     let w = px - this.x;
     let h = py - this.y;
     this.tooSmall = h < 0 || w < 0;
@@ -151,12 +179,16 @@ export class Container extends Element{
     let old = Number( this.element.style.borderWidth.replace("px", "") )
     let displacement = t - old;
     console.log(displacement);
-    this._setPosition( this.x - displacement, this.y - displacement);
+    // this._setPosition( this.x - displacement, this.y - displacement);
     this.element.style.borderWidth = `${t}px`;
     this.element.style.borderStyle = "solid";
   }
   setBorderRadius(r){
-    this.element.style.borderRadius = `${r}px`;
+    str = `${r}px`;
+    this.setBorderRadiusStr(str);
+  }
+  setBorderRadiusStr(str){
+    this.element.style.borderRadius = str;
   }
   getProperties(){
     let element = this.element;
@@ -164,12 +196,12 @@ export class Container extends Element{
       {},
       super.getProperties(), 
       {
-        height: Number( element.style.height.replace("px", "") ),
-        width: Number( element.style.width.replace("px", "") ),
-        fillColor: element.style.backgroundColor,
-        borderColor: element.style.borderColor,
-        borderThickness: element.style.borderThickness,
-        borderRadius: Number( element.style.borderRadius.replace("px", "") ),
+	height: Number( element.style.height.replace("px", "") ),
+	width: Number( element.style.width.replace("px", "") ),
+	fillColor: element.style.backgroundColor,
+	borderColor: element.style.borderColor,
+	borderThickness: element.style.borderThickness,
+	borderRadius: Number( element.style.borderRadius.replace("px", "") ),
       }
     )
   }
@@ -183,27 +215,70 @@ export class Container extends Element{
     if( this.tooSmall )
       this.destroy()
   }
+  createHandles(){
+    let [x, y] = this.getPosition();    
+    let [w, h] = this.getSize();
+    let M = (h+w)/2;
+    let wog = 10 / window.impressiveCanvas.getScale() ;
+    let hog = 10 / window.impressiveCanvas.getScale() ;
+
+    let W = w + wog;
+    let H = h + hog;
+    let X = x-wog/2;
+    let Y = y-hog/2;
+
+    let handles = Container.create(X, Y, "impressiveCanvas");
+    handles.id("impressiveHandles");
+    handles.setSize(W, H);
+    handles.setFillColor("rgba(0,0,0,0)");
+    handles.setBorderColor("#000");
+    handles.setBorderThickness(3 / window.impressiveCanvas.getScale() );
+
+
+
+    /*
+    let ctop = Circle.create(X + W/2, Y    );
+    let cbot = Circle.create(X + W/2, Y+H  );
+    let crig = Circle.create(X      , Y+H/2);
+    let clef = Circle.create(X + W  , Y+H/2);
+
+    let circles = [ctop, cbot, crig, clef];
+    for(let c of circles){
+      c.setSize(0.03*M, 0.03*M);
+      c.setFillColor("#000");
+
+      let [x, y] = c.getPosition();
+      let [w, h] = c.getSize();
+      c.setPosition(x-w/2, y-h/2);
+    }
+    */
+  }
+}
+
+export class Circle extends Container{
+  constructor(element){
+    super(element)
+  } 
+  static create(x, y, father){
+    let circle = Container.create(x, y, "impressiveCanvas", father);
+    circle.setBorderRadiusStr("100%");
+    return circle;
+  }
 }
 
 export class Image extends Container{
   constructor(element){
     super(element);
   }
-  static tranfromWrtRoot(x, y){
-    let dataset = document.querySelector(`#${this.rootId}`).dataset;
-    x = x - Number( dataset.x );
-    y = y - Number( dataset.y );
-    return [x, y];
-  }
   static create(x, y, rootId){
     this.rootId = rootId;
     let element = document.createElement("div"); // creating container
-    element.classList.add("impressiveImage"); // appropriate style
+    element.classList.add("impressiveImage", "impressiveContainer"); // appropriate style
     element.style.position = "absolute"; // prevents overlapping
-    [x, y] = Image.tranfromWrtRoot(x, y);
     element.dataset.x = x; // position is redundant, for easy retrival
     element.dataset.y = y;
     element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
+    element.style.backgroundSize  = "contain";
     document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
     return new Image(element);
   }
@@ -211,8 +286,8 @@ export class Image extends Container{
     let parentList = super.getPropertiesList();
     let list = {
       image: "string",
-      offsetX: "number",
-      offsetY: "number",
+      offsetX: "numberD1",
+      offsetY: "numberD1",
     }
     return Object.assign({}, parentList, list);
   }
@@ -222,10 +297,126 @@ export class Image extends Container{
       {},
       super.getProperties(), 
       {
-	image: "",
-	offsetX: 0,
-	offsetY: 0
+	image: this.getImage(),
+	offsetX: this.getPositionX(),
+	offsetY: this.getPositionY()
       }
     )
   }
+  getImage(){
+    return this.element.style.backgroundImage;
+  }
+  getPositionX(){
+    return Number(this.element.style.backgroundPositionX.replace("px", ""));
+  }
+  getPositionY(){
+    return Number(this.element.style.backgroundPositionY.replace("px", ""));
+  }
+  setImage(str){
+   this.element.style.backgroundImage = `url(${str})`;
+  }
+  setPositionX(value){
+    this.element.style.backgroundPositionX = `${value}px`;
+  }
+  setPositionY(value){
+    this.element.style.backgroundPositionY = `${value}px`;
+  }
+  setProperty(prop, value){
+    switch(prop){
+      case "image":
+	this.setImage(value);
+	break;
+      case "offsetX":
+	this.setPositionX(value);
+	break;
+      case "offsetY":
+	this.setPositionY(value);
+	break;
+      default:
+	super.setProperty(prop, value);
+	break;
+    }
+  }
+}
+
+export class Text extends Container{
+  static create(x, y){
+    let rootId = this.rootId = "impressiveCanvas";
+    let element = document.createElement("div"); // creating container
+    element.classList.add("impressiveText", "impressiveContainer"); // appropriate style
+    element.style.position = "absolute"; // prevents overlapping
+    element.dataset.x = x; // position is redundant, for easy retrival
+    element.dataset.y = y;
+    element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
+    element.style.backgroundSize  = "contain";
+    document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
+    return new Text(element);
+  }
+  getPropertiesList(){
+    let parentList = super.getPropertiesList();
+    let list = {
+      text: "string",
+      color: "color",
+      padding: "pnumberD1", 
+      textAlign: "string",
+    }
+    return Object.assign({}, parentList, list);
+  }
+  getProperties(){
+    let element = this.element;
+    return Object.assign(
+      {},
+      super.getProperties(), 
+      {
+	text: this.getText(),
+	color: this.getColor(),
+	padding: this.getPadding(),
+	textAlign: this.getTextAlign(),
+      }
+    )
+  }
+  setProperty(prop, value){
+    switch(prop){
+      case "text":
+	this.setText(value);
+	break;
+      case "color":
+	this.setColor(value);
+	break;
+      case "padding":
+	this.setPadding(value);
+	break;
+      case "textAlign":
+	this.setTextAlign(value);
+	break;
+      default:
+	super.setProperty(prop, value);
+	break;
+    }
+  }
+  setText(text){
+    this.element.innerHTML = text;
+  }
+  setColor(col){
+    this.element.style.color = col;
+  }
+  setPadding(padding){
+    this.element.style.padding = `${padding}px`;
+  }
+  setTextAlign(str){
+    this.element.style.textAlign = str;
+  }
+  getText(){
+    return this.element.innerHTML;
+  }
+  getColor(){
+    return this.element.style.color;
+  }
+  getPadding(){
+    return Number(this.element.style.padding.replace("px", ""));
+  }
+  getTextAlign(){
+    return this.element.style.textAlign;
+  }
+
 }

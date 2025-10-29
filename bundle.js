@@ -8,6 +8,8 @@ window.GoldenLayout = GoldenLayout;
 // interact
 window.interact = require("interactjs");
 
+// window.sortable = require("html5sortable");
+
 },{"golden-layout":2,"interactjs":35}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });

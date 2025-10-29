@@ -22,7 +22,17 @@ export class PropertiesWindow{
   selectElement(e){
     this.element.innerHTML = ""; // reset the element
 
+
+    if(this.selected != null){
+	// document.querySelector("#selectionHandles").remove();
+    }
     this.selected = e.element;
+
+    if(e.element == null){
+	return;	
+    }
+
+    // this.selected.createHandles();
 
 
     let list = e.element.getProperties();
@@ -35,6 +45,9 @@ export class PropertiesWindow{
           break;
         case "pnumber":
           element = makeFieldNumber(property, value, true);
+          break;
+        case "numberD1":
+          element = makeFieldNumber(property, value, false, 1);
           break;
 	case "pnumberD1":
           element = makeFieldNumber(property, value, true, 1);
@@ -107,7 +120,7 @@ export class StepListWindow{
     // reload the sortable, but apparently it doesn't work.
     // So, the ugly hack is to destroy it and make it again.
     // sortable("#StepListWindow", "destroy");
-    sortable(
+    window.sortable(
       "#StepListWindow",
       {
         items: '.step',
