@@ -25,9 +25,26 @@ It wouldn't be a big problem, if it wasn't for the fact that arranging elements 
 So, in essence: this project aims at being a viable alternative to all the current software and offer a simple gui to interact with the elements.
 
 
+# Building 
+
+In order to build the libraries, you need npm.
+
+Run ``npm install``.
+This will install all the necessary packages to proceed with generating the
+libraries needed.
+
+Then, it is necessary to build the bundle using ``browserify``.
+To do that, simply run 
+
+``npx browserify browserify.js > bundle.js``.
+
+This command generates the file `bundle.js` which is imported in the file *`index.html`.
+
+
 # Installation 
 
 There is really nothing to install, it's just a simple web page. Although you might want to take a look at the following section, just in case.
+
 
 # Usage 
 
