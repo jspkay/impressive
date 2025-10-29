@@ -1,9 +1,12 @@
 {
   "dependencies": {
     "bootstrap-icons": "^1.13.1",
+    "browserify": "^17.0.1",
+    "golden-layout": "^2.6.0",
     "html5sortable": "^0.14.0",
-    "http-server": "^14.1.1"
-  }
+    "http-server": "^14.1.1",
+    "tslib": "^2.8.1"
+  },
   "name": "withgoldenlayout",
   "version": "1.0.0",
   "description": "> IMPORTANT: Current branch in development is `GoldenLayout`.",
