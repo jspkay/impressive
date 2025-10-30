@@ -189,7 +189,13 @@ export class SelectTool extends Tool{
 	  this.dragging = true;
 	}.bind(this),
 	onmove: function(e){
-	  this.canvas.setContainerPositionDelta( container, e.dx, e.dy );
+	  let [x, y] = container.getPosition()
+	  let scale = this.canvas.getScale();
+	  let newX = x + e.dx/scale;
+	  let newY = y + e.dy/scale;
+	  container.setPosition( newX, newY ); 
+	  this.pos = {x: newX, y:newY};
+	  // this.canvas.setContainerPositionDelta( container, e.dx, e.dy );
 	}.bind(this),
 	onend: function(e){
 	  this.dragging = false;

@@ -12,6 +12,11 @@ overflow: hidden;
   height: 100%;
 }
 
+.hidden{
+  display: none;
+  visibility: hidden:
+}
+
 /*
 div.impressiveContainer{
   background: red;

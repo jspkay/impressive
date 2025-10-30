@@ -17,6 +17,11 @@ export class ImpressiveCanvas{
     this.origin = document.createElement("div");
     this.origin.setAttribute("id", "origin");
     this.element.append(this.origin);
+    let centerGrid = document.createElement("div");
+    centerGrid.innerHTML = `
+<div class="impressiveCenterGrid hidden" style="width: 0.3em; position: absolute; height: 100%; background:rgba(0, 0, 0, 0.5); left:50%; top:0; translate: -50%" ></div>
+<div class="impressiveCenterGrid hidden" style="height: 0.3em; position: absolute; width: 100%; background:rgba(0, 0, 0, 0.5); left:0; top:50%; translate: 0 -50%"></div>`;
+    this.containerElement.appendChild(centerGrid);
 
     // visual effects
     this.containerElement.style.backgroundPositionX = "0px";
@@ -26,7 +31,7 @@ export class ImpressiveCanvas{
     this.dataset.x = 0;
     this.dataset.y = 0;
     this.element.style.scale = 1;
-    this.selectElement = null;
+    this.selectedElement = null;
 
     // initialize the active tool
     this.mouseHandling = new ContainerTool(this, container.getElement(), this.element);
@@ -46,6 +51,11 @@ export class ImpressiveCanvas{
     container.layoutManager.eventHub.on("selectElement", function (e){
       this.selectedElement = e.element;
     }.bind(this));
+    container.layoutManager.eventHub.on("toggleCenterGrid",
+    (e) => {
+      for(let el of document.querySelectorAll(".impressiveCenterGrid"))
+	el.classList.toggle("hidden");
+    });
 
   }
   replaceContents(content){
@@ -127,6 +137,12 @@ export class ImpressiveCanvas{
     let x = Number(values[4]);
     let y = Number(values[5]);
     return [x, y];
+  }
+  getTriggerSize(){
+    let w, h;
+    w = this.containerElement.offsetWidth;
+    h = this.containerElement.offsetHeight;
+    return [w, h];
   }
   triggerCoordinateToCanvas(x, y){
     /* This function takes a coordinate (x,y)

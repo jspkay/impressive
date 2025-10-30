@@ -3,6 +3,7 @@
 import {Mouse} from "./mouse.js";
 import {makeField, makeFieldBool, makeFieldNumber, makeFieldTextArea, makeContextMenu} from "./bootstrapHelpers.js";
 import {StepManager} from "./stepmanager.js";
+import {Alignment} from "./alignment.js";
 
 export class PropertiesWindow{
   constructor(container, state){
@@ -179,4 +180,96 @@ export class StepListWindow{
       document.body.appendChild(this.menu);
     }
   }
+}
+
+export class ElementAnimationWindow{
+    constructor(container, state){}
+}
+export class TransitionManagerWindow{
+    constructor(container, state){}
+}
+export class AlignmentWindow{
+    constructor(container, state){
+	let basicStructure = `
+<button id="impressiveAlignLeft" type="button" class="btn btn-primary"> <i class="bi bi-align-start"></i></button>
+<button id="impressiveAlignCenter" type="button" class="btn btn-primary"> <i class="bi bi-align-center"></i></button>
+<button id="impressiveAlignRight" type="button" class="btn btn-primary"> <i class="bi bi-align-end"></i></button>
+<button id="impressiveAlignTop" type="button" class="btn btn-primary"> <i class="bi bi-align-top"></i></button>
+<button id="impressiveAlignMiddle" type="button" class="btn btn-primary"> <i class="bi bi-align-middle"></i></button>
+<button id="impressiveAlignBottom" type="button" class="btn btn-primary"> <i class="bi bi-align-bottom"></i></button>
+	`
+	container.getElement().innerHTML = basicStructure;
+	this.containerElement = container.getElement();
+
+	this.alignment = new Alignment();
+
+	// Horizontal
+	this.containerElement.querySelector("#impressiveAlignLeft").addEventListener(
+	    "click",
+	    (e) => {
+		window.layout.eventHub.emit("alignLeft");
+	    }
+	);
+	this.containerElement.querySelector("#impressiveAlignCenter").addEventListener(
+	    "click",
+	    (e) => {
+		window.layout.eventHub.emit("alignCenter");
+	    }
+	);
+	this.containerElement.querySelector("#impressiveAlignRight").addEventListener(
+	    "click",
+	    (e) => {
+		window.layout.eventHub.emit("alignRight");
+	    }
+	);
+
+
+
+	this.containerElement.querySelector("#impressiveAlignTop").addEventListener(
+	    "click",
+	    (e) => {
+		window.layout.eventHub.emit("alignTop");
+	    }
+	);
+	this.containerElement.querySelector("#impressiveAlignCenter").addEventListener(
+	    "click",
+	    (e) => {
+		window.layout.eventHub.emit("alignCenter");
+	    }
+	);
+	this.containerElement.querySelector("#impressiveAlignMiddle").addEventListener(
+	    "click",
+	    (e) => {
+		window.layout.eventHub.emit("alignMiddle");
+	    }
+	);
+	this.containerElement.querySelector("#impressiveAlignBottom").addEventListener(
+	    "click",
+	    (e) => {
+		window.layout.eventHub.emit("alignBottom");
+	    }
+	);
+    }
+}
+
+export class SettingsWindow{
+    constructor(container, state){
+
+	let content = `
+ <input class="form-check-input" type="checkbox" value="" id="impressiveShowCenterGrid">
+  <label class="form-check-label" for="impressiveShowCenterGrid">
+    Show Center
+  </label>	
+	`
+
+	this.containerElement = container.getElement();
+	this.containerElement.innerHTML = content;
+    
+	this.containerElement.querySelector("input").addEventListener(
+	    "change",
+	    (e) => {
+		window.layout.eventHub.emit("toggleCenterGrid");
+	    }
+	)
+    }
 }

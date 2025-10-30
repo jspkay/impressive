@@ -67,28 +67,43 @@ function initWindows(element){
   }
   for(let action of options) {
     name = action.children[0].innerHTML;
+    let config = null;
+    console.log(name)
     switch(name){
       case "Properties":
-	actfn = () => {
-
-	  let open = window.layout.rootItem.contentItems;
-	  for(let el of open){
-	    console.log(el);
-	    console.log(el.id);
-	  }
-
-	  let config = {
+	  config = {
 	    type: 'component',
 	    componentName: 'PropertiesWindow',
 	    componentState: { label: 'Properties' },
 	    title: "Properties",
 	  }
-	  window.layout.rootItem.addItem( config );
-	};
-      case "New...":
+	break;
+      case "Step List":
+	  config = {
+	    type: 'component',
+	    componentName: 'StepListWindow',
+	    componentState: { label: 'StepList' },
+	    title: "Step list",
+	  }
+	break;
+      case "Settings":
+	config = {
+	  type: 'component',
+	  componentName: 'SettingsWindow',
+	  title: "Settings",
+	}
       default:
 	break;
-    }
+    };
+    console.log(config);
+    actfn = () => {
+      let open = window.layout.rootItem.contentItems;
+      for(let el of open){
+	console.log(el);
+	console.log(el.id);
+      }
+      window.layout.rootItem.addItem( config );
+    };
     action.addEventListener("click", actfn);
   }
 }

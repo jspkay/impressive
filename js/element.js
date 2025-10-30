@@ -5,11 +5,11 @@ import {pfx} from "./utils.js";
 // It takes care of constructing elements and adding them to the DOM.
 // On top of that, it gives access to the basic properties of every element
 // of which we compose our presentation
-class Element{
+export class Element{
   constructor(element){
-    if(element.constructor == Element){
-      throw new Error("Abstract class cannot be instantiated!");
-    }
+    //if(element.constructor == Element){
+    //  throw new Error("Abstract class cannot be instantiated!");
+    //}
     this.element = element;
     this.x = Number(element.dataset.x);
     this.y = Number(element.dataset.y);
@@ -59,6 +59,12 @@ class Element{
       x: this.x,
       y: this.y,
     }
+  }
+  getX(){
+    return Number(this.element.dataset.x);
+  }
+  getY(){
+    return Number(this.element.dataset.y);
   }
   getPosition(){
     return [this.x, this.y]
