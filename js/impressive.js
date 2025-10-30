@@ -20,6 +20,11 @@ import {init as toolbarInit} from "./toolbar.js";
 // Main setup
 logging.debug("Setting up impressive...");
 
+// prompt the user before losing changes
+window.onbeforeunload = (e)=>{
+  return true;
+};
+
 
 /* TODO:
  * - impress.js (to allow presentation mode) 
