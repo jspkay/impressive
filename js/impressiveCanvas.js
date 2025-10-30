@@ -6,6 +6,7 @@ export class ImpressiveCanvas{
     // take the root 
     window.impressive.canvas = this;
     this.containerElement = container.getElement();
+    this.containerElement.addEventListener("mouseenter", (e) => {impressive.focus = "ImpressiveCanvas"});
 
       // create the canvas
     this.element = document.createElement("div");
@@ -29,9 +30,14 @@ export class ImpressiveCanvas{
 
     // initialize the active tool
     this.mouseHandling = new ContainerTool(this, container.getElement(), this.element);
-    this.keyboardHandling = new KeyboardManager();
-    this.keyboardHandling.addAction("Delete", ()=>{window.impressiveCanvas.selectedElement.destroy()})
-    this.keyboardHandling.addAction("Backspace", ()=>{window.impressiveCanvas.selectedElement.destroy()})
+    this.keyboardHandling = new KeyboardManager(document);
+
+    let destroyElement = function(){
+	window.impressiveCanvas.selectedElement.destroy();
+	window.layout.eventHub.emit("selectElement", {element: null});
+    }
+    this.keyboardHandling.addAction("Delete", destroyElement, "ImpressiveCanvas")
+    this.keyboardHandling.addAction("Backspace", destroyElement, "ImpressiveCanvas")
 
     window.impressiveCanvas = this;
 

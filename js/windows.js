@@ -6,6 +6,9 @@ import {StepManager} from "./stepmanager.js";
 
 export class PropertiesWindow{
   constructor(container, state){
+    this.containerElement = container.getElement();
+    this.containerElement.addEventListener("mouseenter", (e) => {impressive.focus = "PropertiesWindow"});
+
     console.log(container);
     this.id = "PropertiesWindow";
     this.element = container.getElement();
@@ -86,6 +89,9 @@ export class PropertiesWindow{
 
 export class StepListWindow{
   constructor(container, state){
+    this.containerElement = container.getElement();
+    this.containerElement.addEventListener("mouseenter", (e) => {impressive.focus = "StepListWindow"});
+
     console.log(container);
     this.element = container.getElement();
     this.element.setAttribute("id", "StepListWindow");

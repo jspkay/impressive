@@ -1,46 +1,51 @@
 export class KeyboardManager{
-  constructor(){
+  constructor(target){
     this.actions = {}
-    document.addEventListener("keydown", this.keyDown.bind(this));
-    document.addEventListener("keyup", this.keyUp.bind(this));
+    target.addEventListener("keydown", this.keyDown.bind(this));
+    target.addEventListener("keyup", this.keyUp.bind(this));
     this.ctrl = false;
     this.alt = false;
     this.pressed = [];
   }
   keyDown(e){
-    e.preventDefault();
-    
     if(e.key == "Control") this.ctrl = true;
     else if(e.key == "Alt") this.alt = true;
-    else this.pressed.push( e.key );
+    else{ 
+	if (this.pressed.indexOf(e.key == -1))
+	    this.pressed.push( e.key );
+    }
 
     this.processCombination();
   }
   keyUp(e){
-    e.preventDefault();
-    
+    console.log(e.key);
     if(e.key == "Control") this.ctrl = false;
     else if(e.key == "Alt") this.alt = false;
     else {
-      let idx = this.pressed.indexOf( e.key );
-      this.pressed.slice(idx, 1);
+      this.pressed = this.pressed.filter( i => i != e.key );
     }
 
     this.processCombination();
   }
   processCombination(){
+      console.log(this.pressed);
 
     if(this.ctrl && this.pressed.indexOf("r") != -1){
       window.location.reload();
     }
     
     for(let key in this.actions ){
-      if( this.pressed.indexOf(key) != -1 )
-	this.actions[key]();
+      if(
+	   this.pressed.indexOf(key) != -1 &&
+	  (this.actions[key][1] == "*" || this.actions[key][1] == window.impressive.focus)
+      ){
+	this.actions[key][0]();
+      }
     }
   }
-  addAction(combination, fn){
-    this.actions[combination] = fn; 
+  addAction(combination, fn, focus){
+    if(focus == undefined) focus = "*";
+    this.actions[combination] = [fn, focus]; 
   }
 
 }
