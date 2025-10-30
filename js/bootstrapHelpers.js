@@ -81,7 +81,23 @@ export function makeFieldNumber(prop, value, alwaysPositive=false, delta=null){
 
   return root;
 }
+export function makeFieldTextArea(prop, value){
+  let root = document.createElement("div");
+  root.classList.add("input-group", "mb-3");
 
+  root.innerHTML = `
+<span class="input-group-text" >${prop}</span>
+<textarea placeholder="${prop}" class="form-control" ></textarea>
+`
+
+  let input = root.querySelector("textarea");
+  input.value = value;
+  input.addEventListener("change", (e)=>{
+    window.layout.eventHub.emit("propertyChanged", {[prop]: e.target.value});
+  });
+
+  return root;
+}
 export function makeContextMenu(elements){
   let menu = document.createElement("div");
   let list = document.createElement("div");

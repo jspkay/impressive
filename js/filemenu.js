@@ -33,10 +33,12 @@ function initFile(element){
         actfn = () => {
           download()
         };
+        break;
       case "Upload":
         actfn = () =>{
           upload()
         };
+        break;
       case "New...":
       default:
         break;

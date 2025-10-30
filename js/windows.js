@@ -1,7 +1,7 @@
 "use strict";
 
 import {Mouse} from "./mouse.js";
-import {makeField, makeFieldNumber, makeContextMenu} from "./bootstrapHelpers.js";
+import {makeField, makeFieldNumber, makeFieldTextArea, makeContextMenu} from "./bootstrapHelpers.js";
 import {StepManager} from "./stepmanager.js";
 
 export class PropertiesWindow{
@@ -53,9 +53,12 @@ export class PropertiesWindow{
         case "numberD1":
           element = makeFieldNumber(property, value, false, 1);
           break;
-	case "pnumberD1":
+        case "pnumberD1":
           element = makeFieldNumber(property, value, true, 1);
 	  break;
+        case "longString":
+          element = makeFieldTextArea(property, value);
+          break;
         default:
           element = makeField(property, value);
           break;

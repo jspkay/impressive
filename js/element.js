@@ -373,15 +373,15 @@ export class Text extends Container{
     let res = new Text(element);
     res.setFillColor("rgba(0,0,0,0)");
     res.setBorderColor("#000");
-    res.setBorderStyle("dashed");
     res.setBorderThickness(3 * M);
+    res.setBorderStyle("dashed");
 
     return res;
   }
   getPropertiesList(){
     let parentList = super.getPropertiesList();
     let list = {
-      text: "string",
+      text: "longString",
       color: "color",
       padding: "pnumberD1", 
       textAlign: "string",
