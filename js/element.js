@@ -15,6 +15,9 @@ class Element{
     this.y = Number(element.dataset.y);
     this.tooSmall = false; // Does this stay ?
   }
+  destroy(){
+    this.element.remove();
+  }
   appendChild(element){
     this.element.appendChild(element);
   }
@@ -113,6 +116,9 @@ export class Container extends Element{
 
     let res = new Container(element);
 
+    // initial settings 
+    res.setFillColor("#000");
+
     return res;
   }
   static fromElement(element){
@@ -141,6 +147,12 @@ export class Container extends Element{
       case "width": 
 	let h = this.getHeight();
 	this.setSize(value, h);
+	break;
+      case "fillColor":
+	this.setFillColor(value);
+	break;
+      case "borderColor":
+	this.setBorderColor(value);
 	break;
       case "borderThickness":
 	this.setBorderThickness(value);
@@ -280,7 +292,11 @@ export class Image extends Container{
     element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
     element.style.backgroundSize  = "contain";
     document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
-    return new Image(element);
+
+    let res = new Image(element);
+    res.setFillColor("blue");
+
+    return res;
   }
   getPropertiesList(){
     let parentList = super.getPropertiesList();
@@ -313,7 +329,7 @@ export class Image extends Container{
     return Number(this.element.style.backgroundPositionY.replace("px", ""));
   }
   setImage(str){
-   this.element.style.backgroundImage = `url(${str})`;
+    this.element.style.backgroundImage = `url(${str})`;
   }
   setPositionX(value){
     this.element.style.backgroundPositionX = `${value}px`;
@@ -350,7 +366,16 @@ export class Text extends Container{
     element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
     element.style.backgroundSize  = "contain";
     document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
-    return new Text(element);
+
+
+    let M = 3 / window.impressiveCanvas.getScale();
+
+    let res = new Text(element);
+    res.setFillColor("rgba(0,0,0,0)");
+    res.setBorderColor("#000");
+    res.setBorderThickness(3 * M);
+
+    return res;
   }
   getPropertiesList(){
     let parentList = super.getPropertiesList();
@@ -359,6 +384,7 @@ export class Text extends Container{
       color: "color",
       padding: "pnumberD1", 
       textAlign: "string",
+      fontSize: "pnumberD1",
     }
     return Object.assign({}, parentList, list);
   }
@@ -372,6 +398,7 @@ export class Text extends Container{
 	color: this.getColor(),
 	padding: this.getPadding(),
 	textAlign: this.getTextAlign(),
+	fontSize: this.getFontSize(),
       }
     )
   }
@@ -388,6 +415,9 @@ export class Text extends Container{
 	break;
       case "textAlign":
 	this.setTextAlign(value);
+	break;
+      case "fontSize": 
+	this.setFontSize(value);
 	break;
       default:
 	super.setProperty(prop, value);
@@ -406,6 +436,12 @@ export class Text extends Container{
   setTextAlign(str){
     this.element.style.textAlign = str;
   }
+  setFontSize(value){
+    this.setFontSizeStr(`${value}pt`);
+  }
+  setFontSizeStr(value){
+    this.element.style.fontSize = value;
+  }
   getText(){
     return this.element.innerHTML;
   }
@@ -418,5 +454,7 @@ export class Text extends Container{
   getTextAlign(){
     return this.element.style.textAlign;
   }
-
+  getFontSize(){
+    return Number(this.element.style.fontSize.replace("px", "").replace("pt", ""));
+  }
 }

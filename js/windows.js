@@ -7,6 +7,7 @@ import {StepManager} from "./stepmanager.js";
 export class PropertiesWindow{
   constructor(container, state){
     console.log(container);
+    this.id = "PropertiesWindow";
     this.element = container.getElement();
     this.element.setAttribute("id", "PropertiesWindow");
     console.log(this.element);

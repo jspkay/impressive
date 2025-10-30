@@ -1,4 +1,5 @@
 import {PanAndZoomTool, ContainerTool, SelectTool, ImageTool, TextTool} from "./tools.js";
+import {KeyboardManager} from "./keyboard.js";
 
 export class ImpressiveCanvas{
   constructor(container, componentState){
@@ -24,14 +25,21 @@ export class ImpressiveCanvas{
     this.dataset.x = 0;
     this.dataset.y = 0;
     this.element.style.scale = 1;
+    this.selectElement = null;
 
     // initialize the active tool
     this.mouseHandling = new ContainerTool(this, container.getElement(), this.element);
+    this.keyboardHandling = new KeyboardManager();
+    this.keyboardHandling.addAction("Delete", ()=>{window.impressiveCanvas.selectedElement.destroy()})
+    this.keyboardHandling.addAction("Backspace", ()=>{window.impressiveCanvas.selectedElement.destroy()})
 
     window.impressiveCanvas = this;
 
     // Events management
     container.layoutManager.eventHub.on("toolChanged", this.changeTool.bind(this));
+    container.layoutManager.eventHub.on("selectElement", function (e){
+      this.selectedElement = e.element;
+    }.bind(this));
 
   }
   changeTool(event){

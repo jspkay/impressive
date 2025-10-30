@@ -140,8 +140,8 @@ export class SelectTool extends Tool{
       "selectElement", {element: selElement});
 
     let move = function(e){
-      let [x, y] = container.getPosition();
-      container.setPosition(x+e.dx, y+e.dy);
+      let [x, y] = selElement.getPosition();
+      selElement.setPosition(x+e.dx, y+e.dy);
     }
     let int = interact(e.target);
     int.resizable({
@@ -153,11 +153,11 @@ export class SelectTool extends Tool{
 	this.draggable = e.target;
       }.bind(this),
       onmove: (e)=>{
-	let [w, h] = container.getSize();
+	let [w, h] = selElement.getSize();
 	console.log(e.rect);
 	console.log(e.deltaRect);
 	this.canvas.setContainerSizeInteract(
-	  container, 
+	  selElement, 
 	  e.rect, 
 	  e.deltaRect,
 	);
