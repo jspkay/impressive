@@ -1,4 +1,4 @@
-import {download} from "./filemanager.js"
+import {download, upload} from "./filemanager.js"
 
 export function init() {
   let buttons = document.querySelectorAll("button.item");
@@ -30,12 +30,16 @@ function initFile(element){
     name = action.children[0].innerHTML;
     switch(name){
       case "Download":
-	actfn = () => {
-	  download()
-	};
+        actfn = () => {
+          download()
+        };
+      case "Upload":
+        actfn = () =>{
+          upload()
+        };
       case "New...":
       default:
-	break;
+        break;
     }
     action.addEventListener("click", actfn);
   }

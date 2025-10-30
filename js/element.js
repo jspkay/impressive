@@ -373,6 +373,7 @@ export class Text extends Container{
     let res = new Text(element);
     res.setFillColor("rgba(0,0,0,0)");
     res.setBorderColor("#000");
+    res.setBorderStyle("dashed");
     res.setBorderThickness(3 * M);
 
     return res;
@@ -442,6 +443,9 @@ export class Text extends Container{
   setFontSizeStr(value){
     this.element.style.fontSize = value;
   }
+  setBorderStyle(value){
+    this.element.style.borderStyle = value;
+  }
   getText(){
     return this.element.innerHTML;
   }
@@ -456,5 +460,8 @@ export class Text extends Container{
   }
   getFontSize(){
     return Number(this.element.style.fontSize.replace("px", "").replace("pt", ""));
+  }
+  getBorderStyle(value){
+    return this.element.style.borderStyle;
   }
 }

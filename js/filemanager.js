@@ -74,7 +74,7 @@ export function download(){
   console.log(url);
 }
 
-export function upload(){
+export async function upload(){
 
   let form = makeForm({
     "File name": {
@@ -89,18 +89,49 @@ export function upload(){
     "Upload",
   );
   modal.show();
+  let fileField = form.querySelector("#fileUpload");
+  let result = await modal.takeResult(
+    (e)=> {return true}
+  );
 
- let fileField = form.querySelector("#fileUpload");
-  fileField.addEventListener(
-    "change", (e) => {
-      let file = fileField.files[0];
-      console.log(file);
-      let fr = new FileReader();
-      fr.addEventListener("load", (e)=>{
-        let content = e.target.result;
-        console.log(`File name is ${file.name}`);
-        console.log(content);
-      });
-      fr.readAsText(file);
-    });
+  if (result.cancelled){
+    modal.dispose();
+    return;
+  }
+
+  let file = fileField.files[0];
+  console.log(file);
+  let fr = new FileReader();
+  fr.addEventListener("load", (e)=>{
+    let content = e.target.result;
+    console.log(`File name is ${file.name}`);
+    processFile(content);
+  });
+  fr.readAsText(file);
+
+  let processFile = function(content){
+    console.log(content);
+    let parser = new DOMParser();
+    let dom = parser.parseFromString(content, "text/html");
+    console.log(dom);
+    console.log(dom.body);
+
+
+    let steps = dom.querySelector("#StepListWindow").children;
+    console.log(steps);
+    let sm = window.impressive.stepManager;
+    sm.clearAllSteps();
+    for(let step of steps){
+      console.log(step);
+      let x = step.dataset.x;
+      let y = step.dataset.y;
+      let scale = step.dataset.scale;
+      let id = step.getAttribute("id");
+      let name = step.innerHTML;
+      sm.newStep(x, y, scale, name, id);
+    }
+    
+    let canvasContent = dom.querySelector("#impressiveCanvas").innerHTML;
+    window.impressiveCanvas.replaceContents(canvasContent);
+  };
 }

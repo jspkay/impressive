@@ -48,6 +48,9 @@ export class ImpressiveCanvas{
     }.bind(this));
 
   }
+  replaceContents(content){
+    this.element.innerHTML = content;
+  }
   changeTool(event){
     this.mouseHandling.destroy();
     delete this.mouseHandling;

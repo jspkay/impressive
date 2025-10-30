@@ -106,11 +106,12 @@ export class StepListWindow{
     </svg>`
     this.element.appendChild(plusButton);
 
-    this.StepManager = new StepManager(plusButton);
+    this.stepManager = new StepManager(plusButton);
     plusButton.addEventListener(
       "click",
-      this.StepManager.createStep.bind(this.StepManager)
+      this.stepManager.createStep.bind(this.stepManager)
     );
+    window.impressive.stepManager = this.stepManager;
 
     container.layoutManager.eventHub.on(
       "stepCreated", this.stepCreated.bind(this)
@@ -147,7 +148,7 @@ export class StepListWindow{
         for(n = 0; n<steps.length; n++){
           if( steps[n] === element ) break;
         }
-        this.StepManager.goto(n);
+        this.stepManager.goto(n);
     }
   }
   contextMenu(e){
@@ -159,10 +160,10 @@ export class StepListWindow{
     if(e.target.classList.contains("step")){
       this.menu = makeContextMenu({
         Delete: function(event){
-          this.StepManager.deleteStep(e.target);
+          this.stepManager.deleteStep(e.target);
         }.bind(this),
         Rename: function(event){
-          this.StepManager.renameStep(e.target);
+          this.stepManager.renameStep(e.target);
         }.bind(this),
         "Redefine Position...": function(event){
           alert("not implemented yet");

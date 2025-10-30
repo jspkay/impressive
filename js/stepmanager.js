@@ -37,13 +37,11 @@ export class StepManager{
       this.goto(step);
     }.bind(this);
   }
-  createStep(){
-    let currentPos = this.canvas.getPosition();
-    let currentScale = this.canvas.getScale();
-
+  newStep(x, y, scale, name, id){
     let step = document.createElement("div");
 
-    step.innerHTML = String(this.stepCount);
+    if (name == undefined) name = this.stepCount;
+    step.innerHTML = String(name);
     // window.html2canvas(this.canvas.containerElement).then((canvas) => {
     // canvas.style.width = `${step.offsetWidth}px`;
     // canvas.style.height = `${step.offsetHeight}px`;
@@ -51,16 +49,22 @@ export class StepManager{
     // });
 
     step.classList.add("step");
-    let id = Math.floor( Math.random() * 1e5 );
+    if (id == undefined) id = Math.floor( Math.random() * 1e5 );
     step.setAttribute("id", `impDef${id}`)
 
-    step.dataset.x = currentPos[0];
-    step.dataset.y = currentPos[1];
-    step.dataset.scale = currentScale;
+    step.dataset.x = x;
+    step.dataset.y = y;
+    step.dataset.scale = scale;
 
 
     this.last.insertAdjacentElement("beforebegin", step);
     this.stepCount++;
+  }
+  createStep(){
+    let currentPos = this.canvas.getPosition();
+    let currentScale = this.canvas.getScale();
+
+    this.newStep(currentPos[0], currentPos[1], currentScale);
 
     window.layout.eventHub.emit("stepCreated",{});
   }
@@ -95,5 +99,11 @@ export class StepManager{
 
     stepElement.remove();
     this.stepCount--;
+  }
+  clearAllSteps(){
+    let steps = document.querySelectorAll(".step");
+    for(let step of steps){
+      step.remove();
+    }
   }
 }
