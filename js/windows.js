@@ -1,7 +1,7 @@
 "use strict";
 
 import {Mouse} from "./mouse.js";
-import {makeField, makeFieldNumber, makeFieldTextArea, makeContextMenu} from "./bootstrapHelpers.js";
+import {makeField, makeFieldBool, makeFieldNumber, makeFieldTextArea, makeContextMenu} from "./bootstrapHelpers.js";
 import {StepManager} from "./stepmanager.js";
 
 export class PropertiesWindow{
@@ -44,6 +44,9 @@ export class PropertiesWindow{
     for( const [property, value] of Object.entries(list)){
       let element;
       switch(types[property]){
+        case "bool":
+          element = makeFieldBool(property, value);
+          break;
         case "number":
           element = makeFieldNumber(property, value, false);
           break;

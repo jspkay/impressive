@@ -15,6 +15,23 @@ export function makeField(prop, value){
 
   return root;
 }
+export function makeFieldBool(prop, value){
+  let root = document.createElement("div");
+  root.classList.add("input-group", "mb-3");
+
+  root.innerHTML = `
+<span class="input-form-check-label" for=${prop} >${prop}</span>
+<input type="checkbox" class="form-check-input" id=${prop} >
+`
+
+  let input = root.querySelector("input");
+  input.value = value;
+  input.addEventListener("change", (e)=>{
+    window.layout.eventHub.emit("propertyChanged", {[prop]: e.target.checked});
+  });
+
+  return root;
+}
 export function makeFieldNumber(prop, value, alwaysPositive=false, delta=null){
   let root = document.createElement("div");
   root.classList.add("input-group", "mb-3");

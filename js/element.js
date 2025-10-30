@@ -302,6 +302,7 @@ export class Image extends Container{
     let parentList = super.getPropertiesList();
     let list = {
       image: "string",
+      repeat: "bool",
       offsetX: "numberD1",
       offsetY: "numberD1",
     }
@@ -314,6 +315,7 @@ export class Image extends Container{
       super.getProperties(), 
       {
 	image: this.getImage(),
+        repeat: this.getRepeat(),
 	offsetX: this.getPositionX(),
 	offsetY: this.getPositionY()
       }
@@ -321,6 +323,9 @@ export class Image extends Container{
   }
   getImage(){
     return this.element.style.backgroundImage;
+  }
+  getRepeat(){
+    return this.element.style.backgroundRepeat == "repeat";
   }
   getPositionX(){
     return Number(this.element.style.backgroundPositionX.replace("px", ""));
@@ -331,6 +336,10 @@ export class Image extends Container{
   setImage(str){
     this.element.style.backgroundImage = `url(${str})`;
   }
+  setRepeat(value){
+    if(value) this.element.style.backgroundRepeat = "repeat";
+    else this.element.style.backgroundRepeat = "no-repeat";
+  }
   setPositionX(value){
     this.element.style.backgroundPositionX = `${value}px`;
   }
@@ -340,17 +349,20 @@ export class Image extends Container{
   setProperty(prop, value){
     switch(prop){
       case "image":
-	this.setImage(value);
-	break;
+        this.setImage(value);
+        break;
+      case "repeat":
+        this.setRepeat(value);
+        break;
       case "offsetX":
-	this.setPositionX(value);
-	break;
+        this.setPositionX(value);
+        break;
       case "offsetY":
-	this.setPositionY(value);
-	break;
+        this.setPositionY(value);
+        break;
       default:
-	super.setProperty(prop, value);
-	break;
+        super.setProperty(prop, value);
+        break;
     }
   }
 }
@@ -364,6 +376,7 @@ export class Text extends Container{
     element.dataset.x = x; // position is redundant, for easy retrival
     element.dataset.y = y;
     element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
+    element.style.whiteSpace = "pre-line";
     element.style.backgroundSize  = "contain";
     document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
 
