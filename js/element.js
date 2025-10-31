@@ -135,6 +135,7 @@ export class Container extends Element{
   getPropertiesList(){
     let parentList = super.getPropertiesList();
     let list = {
+      zindex: "numberD1",
       width: "pnumber",
       height: "pnumber",
       fillColor: "color",
@@ -146,6 +147,9 @@ export class Container extends Element{
   }
   setProperty(prop, value){
     switch(prop){
+      case "zindex":
+        this.setZIndex(value);
+        break;
       case "height": 
 	let w = this.getWidth();
 	this.setSize(w, value);
@@ -170,6 +174,12 @@ export class Container extends Element{
 	super.setProperty(prop, value);
 	break;
     }
+  }
+  setZIndex(value){
+    this.element.style.zIndex = String(value);
+  }
+  getZIndex(){
+   return Number(this.element.style.zIndex);
   }
   getSize(){
     let w = this.getWidth();
@@ -202,7 +212,7 @@ export class Container extends Element{
     this.element.style.borderStyle = "solid";
   }
   setBorderRadius(r){
-    str = `${r}px`;
+    let str = `${r}px`;
     this.setBorderRadiusStr(str);
   }
   setBorderRadiusStr(str){
@@ -214,6 +224,7 @@ export class Container extends Element{
       {},
       super.getProperties(), 
       {
+        zindex: this.getZIndex(),
 	height: Number( element.style.height.replace("px", "") ),
 	width: Number( element.style.width.replace("px", "") ),
 	fillColor: element.style.backgroundColor,
