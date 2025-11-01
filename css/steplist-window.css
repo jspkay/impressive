@@ -3,6 +3,10 @@ div#StepListWindow{
   background: cyan;
 }
 
+div.lm_content {
+  overflow: scroll;
+}
+
 div#AddStep {
   width:100%;
 }

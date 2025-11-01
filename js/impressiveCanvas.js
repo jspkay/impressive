@@ -6,6 +6,7 @@ export class ImpressiveCanvas{
     // take the root 
     window.impressive.canvas = this;
     this.containerElement = container.getElement();
+    this.containerElement.style.overflow = "hidden";
     this.containerElement.addEventListener("mouseenter", (e) => {impressive.focus = "ImpressiveCanvas"});
 
     // this element is created for setting up the scale properly when the canvas
