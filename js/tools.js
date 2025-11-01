@@ -56,8 +56,9 @@ export class PanAndZoomTool extends Tool{
     this.mouse.mouseUp(e);
   }
   wheel(e){
-    let s = this.canvas.getScale() * this.canvas.getVisualScale();
-    let ds = (1 - e.deltaY / 300);
+    let s = this.canvas.getScale(); // * this.canvas.getVisualScale();
+    let side = e.deltaY > 0 ? 1 : -1;
+    let ds = (1 - side*0.2);
     let changed = this.canvas.setScale(s * ds );
     if(!changed) return;
     let cs = Number(this.trigger.style.backgroundSize.replace("px", "")) * ds;
