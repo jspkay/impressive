@@ -31,7 +31,7 @@ export class Settings{
 	this.setShowRealSize(value);
 	break;
       case "showScreenBorders":
-	this.setScreenBorders(value);
+	this.setShowScreenBorders(value);
 	break;
       case "documentHeight":
 	this.setDocumentSize(this.getDocumentSize()[0], value); 
@@ -53,6 +53,13 @@ export class Settings{
     let canvas = window.impressiveCanvas.element;
     canvas.dataset.width = w;
     canvas.dataset.height = h;
+
+    if( this.getShowRealSize() ){
+	updateRealSize();
+    }
+    if( this.getShowScreenBorders() ){
+	updateScreenBorders();
+    }
   }
   getShowRealSize(){
     return this.canvas.getVisualScale() != 1;
@@ -84,7 +91,7 @@ export class Settings{
   getShowScreenBorders(){
     return document.querySelectorAll(".screenBorders").length != 0;
   }
-  setScreenBorders(value){
+  setShowScreenBorders(value){
     if(value) {
       let screen = window.impressiveCanvas.containerElement;
 
@@ -134,7 +141,7 @@ export class Settings{
   }
 }
 
-function updateRealSize(){
+export function updateRealSize(){
     // viewport dimensions 
     let viewport = window.impressiveCanvas.containerElement;
     let ww = viewport.offsetWidth;
@@ -148,7 +155,7 @@ function updateRealSize(){
     let scale = hScale > wScale ? wScale : hScale;
     window.impressiveCanvas.setRealScale(scale);
   }
-function updateScreenBorders(){
+export function updateScreenBorders(){
     let viewport = window.impressiveCanvas.containerElement;
     let ww = viewport.offsetWidth;
     let wh = viewport.offsetHeight;
@@ -179,9 +186,9 @@ function updateScreenBorders(){
       bands[1].style.height = "100%"; 
 
       let mappedWidht = width * hScale;
-      let rest = ww - mappedWidht;
-      bands[0].style.width = `${rest/2}px`;
-      bands[1].style.width = `${rest/2}px`; 
+      let rest = (ww - mappedWidht);
+      bands[0].style.width = `${rest}px`;
+      bands[1].style.width = `${rest}px`; 
 
       bands[0].style.left = "0"; 
       bands[1].style.right = "0"; 
