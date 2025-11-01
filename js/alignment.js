@@ -1,4 +1,5 @@
 import {Element} from "./element.js"
+import {Settings, updateScreenBorders} from "./settings.js"
 
 export class Alignment{
   constructor(){
@@ -57,7 +58,15 @@ export class Alignment{
     let canvas = window.impressiveCanvas;
    let active = canvas.selectedElement;
     console.log(active.getPosition());
-    let [sx, sy] = canvas.triggerCoordinateToCanvas(0, 0); // start coordinates
+
+    let x0 = 0, y0 = 0;
+    let set = new Settings();
+    if(set.getShowScreenBorders()){
+      let [type,size] = updateScreenBorders();
+      if(type=="ver") x0=size;
+      if(type=="hor") y0=size;
+    }
+    let [sx, sy] = canvas.triggerCoordinateToCanvas(x0, y0); // start coordinates
 
     let [x, y] = active.getPosition();
 
@@ -67,9 +76,18 @@ export class Alignment{
     let canvas = window.impressiveCanvas;
    let active = canvas.selectedElement;
     console.log(active.getPosition());
-    let [sx, sy] = canvas.triggerCoordinateToCanvas(0, 0); // start coordinates
+
     let [w, h] = canvas.getTriggerSize();
-    let [ex, ey] = canvas.triggerCoordinateToCanvas(w,h); // end coordinates
+
+    let x0 = w, y0 = h;
+    let set = new Settings();
+    if(set.getShowScreenBorders()){
+      let [type,size] = updateScreenBorders();
+      if(type=="ver") x0=w-size;
+      if(type=="hor") y0=h-size;
+    }
+      
+    let [ex, ey] = canvas.triggerCoordinateToCanvas(x0, y0); // end coordinates
 
     let [x, y] = active.getPosition();
     [w, h] = active.getSize();
@@ -81,9 +99,18 @@ export class Alignment{
 
   static alignTop(e){
     let canvas = window.impressiveCanvas;
-   let active = canvas.selectedElement;
+    let active = canvas.selectedElement;
     console.log(active.getPosition());
-    let [sx, sy] = canvas.triggerCoordinateToCanvas(0, 0); // start coordinates
+
+    let x0 = 0, y0 = 0;
+    let set = new Settings();
+    if(set.getShowScreenBorders()){
+      let [type,size] = updateScreenBorders();
+      if(type=="ver") x0=size;
+      if(type=="hor") y0=size;
+    }
+
+    let [sx, sy] = canvas.triggerCoordinateToCanvas(x0, y0); // start coordinates
 
     let [x, y] = active.getPosition();
 
@@ -93,9 +120,17 @@ export class Alignment{
     let canvas = window.impressiveCanvas;
    let active = canvas.selectedElement;
     console.log(active.getPosition());
-    let [sx, sy] = canvas.triggerCoordinateToCanvas(0, 0); // start coordinates
+
     let [w, h] = canvas.getTriggerSize();
-    let [ex, ey] = canvas.triggerCoordinateToCanvas(w,h); // end coordinates
+
+    let x0 = w, y0 = h;
+    let set = new Settings();
+    if(set.getShowScreenBorders()){
+      let [type,size] = updateScreenBorders();
+      if(type=="ver") x0=w-size;
+      if(type=="hor") y0=h-size;
+    }
+    let [ex, ey] = canvas.triggerCoordinateToCanvas(x0,y0); // end coordinates
 
     let [x, y] = active.getPosition();
     [w, h] = active.getSize();
