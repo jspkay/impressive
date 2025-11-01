@@ -31,6 +31,7 @@ export function makeFieldBool(prop, value, triggerEvent){
 
   let input = root.querySelector("input");
   input.value = value;
+  input.checked = value;
   input.addEventListener("change", (e)=>{
     window.layout.eventHub.emit(triggerEvent, {[prop]: e.target.checked});
   });

@@ -184,10 +184,13 @@ export class StepListWindow{
 }
 
 export class ElementAnimationWindow{
-    constructor(container, state){}
+    constructor(container, state){
+
+    }
 }
 export class TransitionManagerWindow{
-    constructor(container, state){}
+    constructor(container, state){
+    }
 }
 export class AlignmentWindow{
     constructor(container, state){
@@ -264,7 +267,7 @@ export class SettingsWindow{
 	for(const [prop, type, value] of avail){
 	    switch(type){
 		case "bool":
-		    element = makeFieldBool(prop, false, "settingChanged");
+		    element = makeFieldBool(prop, value, "settingChanged");
 		    break;
 		case "pnumber":
 		    element = makeFieldNumber(prop, value, "settingChanged", true);

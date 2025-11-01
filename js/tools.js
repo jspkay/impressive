@@ -40,7 +40,7 @@ export class PanAndZoomTool extends Tool{
   mouseMove(e){
     this.mouse.mouseMove(e);
     if(this.mouse.clicking){
-      let scale = this.canvas.getScale();
+      let scale = this.canvas.getScale() * this.canvas.getVisualScale();
       let dx = this.mouse.currentCoord.x - this.mouse.clickStarted.x;
       let dy = this.mouse.currentCoord.y - this.mouse.clickStarted.y;
       console.log(dx, dy);
@@ -56,7 +56,7 @@ export class PanAndZoomTool extends Tool{
     this.mouse.mouseUp(e);
   }
   wheel(e){
-    let s = this.canvas.getScale();
+    let s = this.canvas.getScale() * this.canvas.getVisualScale();
     let ds = (1 - e.deltaY / 300);
     let changed = this.canvas.setScale(s * ds );
     if(!changed) return;
@@ -192,7 +192,7 @@ export class SelectTool extends Tool{
 	}.bind(this),
 	onmove: function(e){
 	  let [x, y] = container.getPosition()
-	  let scale = this.canvas.getScale();
+	  let scale = this.canvas.getScale() * this.canvas.getVisualScale();
 	  let newX = x + e.dx/scale;
 	  let newY = y + e.dy/scale;
 	  container.setPosition( newX, newY ); 
