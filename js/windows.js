@@ -4,6 +4,7 @@ import {Mouse} from "./mouse.js";
 import {makeField, makeFieldBool, makeFieldNumber, makeFieldTextArea, makeContextMenu} from "./bootstrapHelpers.js";
 import {StepManager} from "./stepmanager.js";
 import {Alignment} from "./alignment.js";
+import {Settings} from "./settings.js";
 
 export class PropertiesWindow{
   constructor(container, state){
@@ -49,16 +50,16 @@ export class PropertiesWindow{
           element = makeFieldBool(property, value);
           break;
         case "number":
-          element = makeFieldNumber(property, value, false);
+          element = makeFieldNumber(property, value, "propertyChanged", false);
           break;
         case "pnumber":
-          element = makeFieldNumber(property, value, true);
+          element = makeFieldNumber(property, value, "propertyChanged", true);
           break;
         case "numberD1":
-          element = makeFieldNumber(property, value, false, 1);
+          element = makeFieldNumber(property, value, "propertyChanged", false, 1);
           break;
         case "pnumberD1":
-          element = makeFieldNumber(property, value, true, 1);
+          element = makeFieldNumber(property, value, "propertyChanged", true, 1);
 	  break;
         case "longString":
           element = makeFieldTextArea(property, value);
@@ -255,21 +256,21 @@ export class AlignmentWindow{
 export class SettingsWindow{
     constructor(container, state){
 
-	let content = `
- <input class="form-check-input" type="checkbox" value="" id="impressiveShowCenterGrid">
-  <label class="form-check-label" for="impressiveShowCenterGrid">
-    Show Center
-  </label>	
-	`
+	this.settings = new Settings();
 
+	let element;
 	this.containerElement = container.getElement();
-	this.containerElement.innerHTML = content;
-    
-	this.containerElement.querySelector("input").addEventListener(
-	    "change",
-	    (e) => {
-		window.layout.eventHub.emit("toggleCenterGrid");
+	let avail = this.settings.availableSettings();
+	for(const [prop, type, value] of avail){
+	    switch(type){
+		case "bool":
+		    element = makeFieldBool(prop, false, "settingChanged");
+		    break;
+		case "pnumber":
+		    element = makeFieldNumber(prop, value, "settingChanged", true);
+		    break;
 	    }
-	)
+	    this.containerElement.appendChild( element );
+	}
     }
 }

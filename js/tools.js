@@ -115,11 +115,13 @@ export class SelectTool extends Tool{
     console.log(e)
     if(
       // stop if im selecting the canvas itself
+      // and show the properties, for easy access
       e.target == window.impressiveCanvas.element || 
       e.target == window.impressiveCanvas.containerElement
     ) {
       window.layout.eventHub.emit(
-	"selectElement", {element: null});
+	"selectElement", {element: null}
+      );
       this.selected = null;
       return;
     }

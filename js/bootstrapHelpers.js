@@ -15,24 +15,29 @@ export function makeField(prop, value){
 
   return root;
 }
-export function makeFieldBool(prop, value){
+export function makeFieldBool(prop, value, triggerEvent){
   let root = document.createElement("div");
   root.classList.add("input-group", "mb-3");
 
   root.innerHTML = `
+<div class="form-check">
 <span class="input-form-check-label" for=${prop} >${prop}</span>
 <input type="checkbox" class="form-check-input" id=${prop} >
+</div>
 `
+
+  if(triggerEvent == undefined)
+    triggerEvent = "propertyChanged";
 
   let input = root.querySelector("input");
   input.value = value;
   input.addEventListener("change", (e)=>{
-    window.layout.eventHub.emit("propertyChanged", {[prop]: e.target.checked});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: e.target.checked});
   });
 
   return root;
 }
-export function makeFieldNumber(prop, value, alwaysPositive=false, delta=null){
+export function makeFieldNumber(prop, value, triggerEvent, alwaysPositive=false, delta=null){
   let root = document.createElement("div");
   root.classList.add("input-group", "mb-3");
 
@@ -46,36 +51,39 @@ export function makeFieldNumber(prop, value, alwaysPositive=false, delta=null){
 </div>
 `
 
+  if(triggerEvent == undefined){
+      triggerEvent = "propertyChanged";
+  }
 
   let input = root.querySelector("input");
   input.value = value;
   input.addEventListener("change", (e)=>{
-    window.layout.eventHub.emit("propertyChanged", {[prop]: e.target.value});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: e.target.value});
   });
 
   let addDeltaAlwaysPositive = function(e){
       e.preventDefault();
       input.value = Number(input.value) + (delta==null ? e.deltaY : Math.sign(e.deltaY) * delta);
       if(input.value < 1){ input.value = 1; }
-      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+      window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   }
   let removeOneAlwaysPositive = function(e){
     input.value = Number(input.value) - 1;
     if(input.value < 1){ input.value = 1; }
-    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   };
   let addDelta = function(e){
       e.preventDefault();
       input.value = Number(input.value) + (delta==null ? e.deltaY : Math.sign(e.deltaY) * delta);
-      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+      window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   }
   let removeOne = function(e){
     input.value = Number(input.value) - 1;
-    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   };
   let addOne = function(e){
     input.value = Number(input.value) + 1;
-    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   };
 
   // create the event listenere for the plus button 

@@ -17,6 +17,12 @@ overflow: hidden;
   visibility: hidden:
 }
 
+.screenBorders{
+    position: absolute;
+    background: rgba(0,0,0,0.6);
+    transition: 1s ease-in-out;
+}
+
 /*
 div.impressiveContainer{
   background: red;

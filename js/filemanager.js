@@ -1,39 +1,41 @@
 import {Modal, makeForm} from "./bootstrapHelpers.js";
 // import {impress} from "./impress.text.js";
-var impress = "<script src='impress.js/js/impress.new.js'></script>"
+var impress = "<script src='./impress.min.js'></script>"
 
 export function download(){
-  // gather all the elements on the canvas 
-  let canvas = document.querySelector("#impressiveCanvas").cloneNode(true);
-  // remove all the current scale and position, so that it doesn't mess with impress
-  delete canvas.dataset.x;
-  delete canvas.dataset.y;
-  delete canvas.dataset.scale;
-  canvas.style = "position: absolute; top: 50%; left: 50%";
+    ///// Prepare the contents
 
-  // remove the add button
-  let steps = document.querySelector("#StepListWindow").cloneNode(true);
-  steps.children[ steps.children.length - 1 ].remove();
+    // gather all the elements on the canvas 
+    let canvas = document.querySelector("#impressiveCanvas").cloneNode(true);
+    // remove all the current scale and position, so that it doesn't mess with impress
+    delete canvas.dataset.x;
+    delete canvas.dataset.y;
+    delete canvas.dataset.scale;
+    canvas.style = "position: absolute; top: 50%; left: 50%";
 
-  // we set the scale as the current scale
-  let W = document.querySelector("#impressiveCanvas").parentElement.offsetWidth,
-      H = document.querySelector("#impressiveCanvas").parentElement.offsetHeight;
+    // remove the add button
+    let steps = document.querySelector("#StepListWindow").cloneNode(true);
+    steps.children[ steps.children.length - 1 ].remove();
 
-  // The scale as intended in impressive is different than impress:
-  // in impressive the scale is the "zoom of the camera"
-  // in impress the scale is intended as the scale of the element, effectively the inverse of the other one.
-  let stepsElements = steps.querySelectorAll(".step");
-  for(let i=0; i<stepsElements.length; i++){
-    let scale = stepsElements[i].dataset.scale;
-    let x = stepsElements[i].dataset.x;
-    let y = stepsElements[i].dataset.y
-    stepsElements[i].dataset.scale = scale;
-    stepsElements[i].dataset.x = x;
-    stepsElements[i].dataset.y = y;
-  }
+    // we set the scale as the current scale
+    let W = document.querySelector("#impressiveCanvas").parentElement.offsetWidth,
+	H = document.querySelector("#impressiveCanvas").parentElement.offsetHeight;
+
+    // The scale as intended in impressive is different than impress:
+    // in impressive the scale is the "zoom of the camera"
+    // in impress the scale is intended as the scale of the element, effectively the inverse of the other one.
+    let stepsElements = steps.querySelectorAll(".step");
+    for(let i=0; i<stepsElements.length; i++){
+	let scale = stepsElements[i].dataset.scale;
+	let x = stepsElements[i].dataset.x;
+	let y = stepsElements[i].dataset.y
+	stepsElements[i].dataset.scale = scale;
+	stepsElements[i].dataset.x = x;
+	stepsElements[i].dataset.y = y;
+    }
 
 
-  let wrap = `
+    let wrap = `
 <!doctype html>
 <html>
   <head> </head>
@@ -55,6 +57,23 @@ export function download(){
 </html>
   `;
 
+    // showSaveFilePicker is a new api. Might not be 
+    // avalable everywhere. We maintain compatibility
+    if(window.showSaveFilePicker == undefined)
+	downloadOld(wrap);
+    else
+	saveFile(wrap);
+}
+
+
+async function saveFile(content){
+    let fh = await window.showSaveFilePicker();
+    const writeable = await fh.createWritable();
+    await writeable.write(content);
+    await writeable.close();
+}
+
+function downloadOld(wrap){
   console.log(wrap);
   let blob = new Blob(
     [ wrap ],

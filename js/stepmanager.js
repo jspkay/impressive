@@ -40,7 +40,7 @@ export class StepManager{
   newStep(x, y, scale, name, id){
     let step = document.createElement("div");
 
-    if (name == undefined) name = this.stepCount;
+    if (name == undefined) name = `step${this.stepCount}`;
     step.innerHTML = String(name);
     // window.html2canvas(this.canvas.containerElement).then((canvas) => {
     // canvas.style.width = `${step.offsetWidth}px`;
@@ -49,8 +49,8 @@ export class StepManager{
     // });
 
     step.classList.add("step");
-    if (id == undefined) id = Math.floor( Math.random() * 1e5 );
-    step.setAttribute("id", `impDef${id}`)
+    if (id == undefined) id = name; //`impDef${Math.floor( Math.random() * 1e5 )}`;
+    step.setAttribute("id", `${id}`)
 
     step.dataset.x = x;
     step.dataset.y = y;
@@ -67,6 +67,12 @@ export class StepManager{
     this.newStep(currentPos[0], currentPos[1], currentScale);
 
     window.layout.eventHub.emit("stepCreated",{});
+  }
+  findStepIndexFromId(id){
+    let steps = document.querySelectorAll(".step");
+    steps = Array.from(steps);
+    let ids = steps.map( (e)=>{return e.getAttribute("id");} );
+    return ids.indexOf(id);
   }
   findStepIndex(stepElement){
     let steps = document.querySelectorAll(".step");
@@ -88,9 +94,18 @@ export class StepManager{
         return form.querySelector("#renewStep").value;
       }
     )
-    if( !value.cancelled)
-      stepElement.innerHTML = value.value;
     modal.dispose();
+
+    if(value.cancelled) return;
+
+    let idx = this.findStepIndexFromId(value.value);
+    if ( idx != -1 ){
+      alert(`Name is not unique! Found at position ${idx}`);
+      return;
+    }
+
+    stepElement.innerHTML = value.value;
+    stepElement.setAttribute("id", value.value);
   }
   deleteStep(stepElement){
     console.log(stepElement);

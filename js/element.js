@@ -202,7 +202,7 @@ export class Container extends Element{
     this.element.style.borderStyle = "solid";
   }
   setBorderRadius(r){
-    str = `${r}px`;
+    let str = `${r}px`;
     this.setBorderRadiusStr(str);
   }
   setBorderRadiusStr(str){
@@ -214,8 +214,8 @@ export class Container extends Element{
       {},
       super.getProperties(), 
       {
-	height: Number( element.style.height.replace("px", "") ),
 	width: Number( element.style.width.replace("px", "") ),
+	height: Number( element.style.height.replace("px", "") ),
 	fillColor: element.style.backgroundColor,
 	borderColor: element.style.borderColor,
 	borderThickness: element.style.borderThickness,
