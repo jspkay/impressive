@@ -6,7 +6,7 @@ logging.setLevel( logging.levels.DEBUG )
 
 logging.debug("Starting stuff...")
 
-import {ImpressiveCanvas} from "./impressiveCanvas.js"
+import {ImpressiveCanvas} from "./impressiveCanvas.js";
 import {
   PropertiesWindow,
   StepListWindow,
@@ -14,7 +14,8 @@ import {
   TransitionManagerWindow,
   AlignmentWindow,
   SettingsWindow,
-} from "./windows.js"
+} from "./windows.js";
+import {Settings} from "./settings.js";
 
 const Modes = {
   EDITOR: 0,
@@ -121,12 +122,19 @@ function init() {
 
   myLayout.init();
 
+    // resize the layout when the window changes
   window.addEventListener("resize", (e)=>{
     myLayout.updateSize(window.innerWidth, window.innerHeight-$("#menubar").height());
   })
 
+  // init all the buttons
   menuInit();
   toolbarInit();
+
+  // default settings 
+  let set = new Settings();
+  set.setShowRealSize(true);
+  set.setShowScreenBorders(true);
 }
 
 window.impressive = {
