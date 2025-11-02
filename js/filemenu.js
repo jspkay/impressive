@@ -1,4 +1,5 @@
 import {download, upload} from "./filemanager.js"
+import {uploadImage} from "./images.js";
 
 export function init() {
   let buttons = document.querySelectorAll("button.item");
@@ -7,6 +8,9 @@ export function init() {
     switch(html){
       case "Tools":
 	initTools(bt);
+	break;
+      case "Images":
+	initImages(bt);
 	break;
       case "File":
 	initFile(bt);
@@ -114,4 +118,26 @@ function initWindows(element){
     };
     action.addEventListener("click", actfn);
   }
+}
+
+function initImages(element){
+  let options = element.parentElement.children[1].children;
+  var actfn = () => {
+    alert("Action not implemented yet!");
+    return;
+  }
+  for(let action of options) {
+    name = action.children[0].innerHTML;
+    switch(name){
+      case "Upload":
+        actfn = () => {
+          uploadImage();
+        };
+        break;
+      default:
+        break;
+    }
+    action.addEventListener("click", actfn);
+  }
+
 }
