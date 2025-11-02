@@ -61,14 +61,18 @@ export class ImpressiveCanvas{
     window.impressiveCanvas = this;
 
     // Events management
-    container.layoutManager.eventHub.on("toolChanged", this.changeTool.bind(this));
-    container.layoutManager.eventHub.on("selectElement", function (e){
+    let eventHub = container.layoutManager.eventHub;
+    eventHub.on("toolChanged", this.changeTool.bind(this));
+    eventHub.on("selectElement", function (e){
       this.selectedElement = e.element;
     }.bind(this));
-
+    eventHub.on("moveCanvas", this.moveCanvas.bind(this));
   }
   replaceContents(content){
     this.element.innerHTML = content;
+  }
+  moveCanvas(ev){
+
   }
   changeTool(event){
     this.mouseHandling.destroy();
