@@ -98,6 +98,7 @@ export class StepManager{
 
     if(value.cancelled) return;
 
+    let newId = value.value.replaceAll(" ", "_");
     let idx = this.findStepIndexFromId(value.value);
     if ( idx != -1 ){
       alert(`Name is not unique! Found at position ${idx}`);
@@ -105,7 +106,9 @@ export class StepManager{
     }
 
     stepElement.innerHTML = value.value;
-    stepElement.setAttribute("id", value.value);
+    stepElement.setAttribute(
+      "id", newId
+    );
   }
   deleteStep(stepElement){
     console.log(stepElement);
