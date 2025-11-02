@@ -71,7 +71,22 @@ export class ImpressiveCanvas{
   replaceContents(content){
     this.element.innerHTML = content;
   }
-  moveCanvas(ev){
+  moveCanvas(e){
+    for( let movement in e ){
+      let value = e[movement];
+      let [x, y] = this.getPosition();
+      switch( movement ){
+	case "x":
+	  this.setPosition(value, y);
+	  break;
+	case "y":
+	  this.setPosition(x, value);
+	  break;
+	case "scale":
+	  this.setScale(value);
+	  break;
+      }
+    }
 
   }
   changeTool(event){

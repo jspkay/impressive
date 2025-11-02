@@ -14,6 +14,7 @@ import {
   TransitionManagerWindow,
   AlignmentWindow,
   SettingsWindow,
+  CanvasPositionWindow,
 } from "./windows.js";
 import {Settings} from "./settings.js";
 
@@ -119,6 +120,7 @@ function init() {
   myLayout.registerComponentConstructor("TransitionManagerWindow", TransitionManagerWindow);
   myLayout.registerComponentConstructor("AlignmentWindow", AlignmentWindow);
   myLayout.registerComponentConstructor("SettingsWindow", SettingsWindow);
+  myLayout.registerComponentConstructor("CanvasPositionWindow", CanvasPositionWindow);
 
   myLayout.init();
 

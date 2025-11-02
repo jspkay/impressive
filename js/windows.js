@@ -65,7 +65,7 @@ export class PropertiesWindow{
           element = makeFieldTextArea(property, value);
           break;
         default:
-          element = makeField(property, value);
+          element = makeField(property, value, "propertyChanged");
           break;
       }
       this.element.appendChild(element);
@@ -253,6 +253,50 @@ export class AlignmentWindow{
 		window.layout.eventHub.emit("alignBottom");
 	    }
 	);
+    }
+}
+
+export class CanvasPositionWindow{
+    constructor(container, state){
+
+	let canvas = window.impressiveCanvas;
+	let containerElement = container.getElement();
+	let [x, y] = canvas.getPosition();
+	let props = [
+	    ["x", "number", x],
+	    ["y", "number", y],
+	    ["scale", "numberD001", canvas.getScale()],
+	];
+
+      containerElement.innerHTML = `
+<button type="button" class="btn btn-primary"> <i class="bi bi-house"></i></button>
+      `
+      containerElement.querySelector("button").addEventListener(
+      "click",
+	(e) => {
+	  window.layout.eventHub.emit("moveCanvas", {
+	    x: 0, y: 0, scale: 1
+	  });
+	}
+      );
+
+	let element;
+	for(let [prop, type, value] of props){
+	  switch(type){
+	    case "number":
+	      element = makeFieldNumber(prop, value, "moveCanvas");
+	      break;
+	    case "numberD001":
+	      element = makeFieldNumber(prop, value, "moveCanvas", 0, 0.01);
+	      break;
+	    default:
+	      element = makeField(prop, value, "moveCanvas");
+	  }
+	  containerElement.appendChild( element );
+
+	}
+
+
     }
 }
 
