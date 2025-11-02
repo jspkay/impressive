@@ -18,8 +18,8 @@ export function download(){
     steps.children[ steps.children.length - 1 ].remove();
 
     // we set the scale as the current scale
-    let W = document.querySelector("#impressiveCanvas").parentElement.offsetWidth,
-	H = document.querySelector("#impressiveCanvas").parentElement.offsetHeight;
+    let W = document.querySelector("#impressiveCanvas").dataset.width,
+	H = document.querySelector("#impressiveCanvas").dataset.height;
 
     // The scale as intended in impressive is different than impress:
     // in impressive the scale is the "zoom of the camera"
