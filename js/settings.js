@@ -186,7 +186,7 @@ export function updateScreenBorders(){
       bands[1].style.height = "100%"; 
 
       let mappedWidht = width * hScale;
-      let rest = (ww - mappedWidht);
+      let rest = (ww - mappedWidht)/2;
       bands[0].style.width = `${rest}px`;
       bands[1].style.width = `${rest}px`; 
 
