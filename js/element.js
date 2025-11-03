@@ -105,6 +105,8 @@ export class Container extends Element{
     return [x, y];
   }
   static create(x, y, rootId, father){
+    if(rootId == null)
+      rootId = this.rootId = "impressiveCanvas";
     if(father == null)
       father = new Element(document.querySelector(`#${rootId}`));
 
@@ -229,10 +231,14 @@ export class Container extends Element{
 	height: Number( element.style.height.replace("px", "") ),
 	fillColor: element.style.backgroundColor,
 	borderColor: element.style.borderColor,
-	borderThickness: element.style.borderThickness,
+	borderThickness: this.getBorderThickness(),
 	borderRadius: Number( element.style.borderRadius.replace("px", "") ),
       }
     )
+  }
+  getBorderThickness(){
+    let res = this.element.style.borderThickness;
+    return res == undefined ? 0 : Number( res.replace("px", "") );
   }
   getHeight(){
     return Number( this.element.style.height.replace("px", "") );
@@ -318,7 +324,7 @@ export class Image extends Container{
   getPropertiesList(){
     let parentList = super.getPropertiesList();
     let list = {
-      image: "string",
+      image: "longString",
       repeat: "bool",
       offsetX: "numberD1",
       offsetY: "numberD1",
@@ -394,7 +400,7 @@ export class Text extends Container{
     element.dataset.y = y;
     element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
     element.style.whiteSpace = "pre-line";
-    element.style.backgroundSize  = "contain";
+    element.style.fontSize  = "10pt";
     document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
 
 
@@ -415,7 +421,9 @@ export class Text extends Container{
       color: "color",
       padding: "pnumberD1", 
       textAlign: "string",
+      alignContent: "string",
       fontSize: "pnumberD1",
+      bold: "bool",
     }
     return Object.assign({}, parentList, list);
   }
@@ -425,47 +433,70 @@ export class Text extends Container{
       {},
       super.getProperties(), 
       {
-	text: this.getText(),
-	color: this.getColor(),
-	padding: this.getPadding(),
-	textAlign: this.getTextAlign(),
-	fontSize: this.getFontSize(),
+        text: this.getText(),
+        color: this.getColor(),
+        padding: this.getPadding(),
+        textAlign: this.getTextAlign(),
+        alignContent: this.getAlignContent(),
+        fontSize: this.getFontSize(),
+        bold: this.getBold(),
       }
     )
   }
   setProperty(prop, value){
     switch(prop){
       case "text":
-	this.setText(value);
-	break;
+        this.setText(value);
+        break;
       case "color":
-	this.setColor(value);
-	break;
+        this.setColor(value);
+        break;
       case "padding":
-	this.setPadding(value);
-	break;
+        this.setPadding(value);
+        break;
       case "textAlign":
-	this.setTextAlign(value);
-	break;
+        this.setTextAlign(value);
+        break;
+      case "alignContent":
+        this.setAlignContent(value);
+        break;
       case "fontSize": 
-	this.setFontSize(value);
-	break;
+        this.setFontSize(value);
+        break;
+      case "bold":
+        this.setBold(value);
+        break;
       default:
-	super.setProperty(prop, value);
-	break;
+        super.setProperty(prop, value);
+        break;
     }
   }
   setText(text){
     this.element.innerHTML = text;
   }
+  getText(){
+    return this.element.innerHTML;
+  }
   setColor(col){
     this.element.style.color = col;
+  }
+  getColor(){
+    return this.element.style.color;
   }
   setPadding(padding){
     this.element.style.padding = `${padding}px`;
   }
+  getPadding(){
+    return Number(this.element.style.padding.replace("px", ""));
+  }
   setTextAlign(str){
     this.element.style.textAlign = str;
+  }
+  getTextAlign(){
+    return this.element.style.textAlign;
+  }
+  getFontSize(){
+    return Number(this.element.style.fontSize.replace("px", "").replace("pt", ""));
   }
   setFontSize(value){
     this.setFontSizeStr(`${value}pt`);
@@ -476,22 +507,20 @@ export class Text extends Container{
   setBorderStyle(value){
     this.element.style.borderStyle = value;
   }
-  getText(){
-    return this.element.innerHTML;
-  }
-  getColor(){
-    return this.element.style.color;
-  }
-  getPadding(){
-    return Number(this.element.style.padding.replace("px", ""));
-  }
-  getTextAlign(){
-    return this.element.style.textAlign;
-  }
-  getFontSize(){
-    return Number(this.element.style.fontSize.replace("px", "").replace("pt", ""));
-  }
   getBorderStyle(value){
     return this.element.style.borderStyle;
+  }
+  getBold(){
+    return this.element.style.fontWeight == "bold";
+  }
+  setBold(value){
+    if(value) this.element.style.fontWeight = "bold";
+    else this.element.style.fontWeight = "normal";
+  }
+  getAlignContent(){
+    return this.element.style.alignContent;
+  }
+  setAlignContent(value){
+    this.element.style.alignContent = value;
   }
 }

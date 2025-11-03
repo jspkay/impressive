@@ -10,6 +10,7 @@ export class KeyboardManager{
   keyDown(e){
     if(e.key == "Control") this.ctrl = true;
     else if(e.key == "Alt") this.alt = true;
+    else if(e.key == "Shift") this.shift = true;
     else{ 
 	if (this.pressed.indexOf(e.key == -1))
 	    this.pressed.push( e.key );
@@ -21,6 +22,7 @@ export class KeyboardManager{
     console.log(e.key);
     if(e.key == "Control") this.ctrl = false;
     else if(e.key == "Alt") this.alt = false;
+    else if(e.key == "Shift") this.shift = false;
     else {
       this.pressed = this.pressed.filter( i => i != e.key );
     }

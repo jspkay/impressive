@@ -112,12 +112,28 @@ export class ContainerTool extends Tool{
 }
 
 export class SelectTool extends Tool{
+  constructor(canvas, trigger, element){
+    super(canvas, trigger, element);
+    this.selected = [];
+    this.keyboard = window.impressiveCanvas.keyboardHandling;
+  }
+  constructElement(target){
+    let el = target.classList;
+    let selElement = new Container(target);
+    if( el.contains("impressiveImage") ){
+      selElement = new Image(target);
+    }else if(el.contains("impressiveText") ){
+      selElement = new Text(target);
+    }
+    return selElement;
+  }
   mouseDown(e){
     if(
       // stop if im selecting the canvas itself
       // and show the properties, for easy access
-      e.target == window.impressiveCanvas.element || 
-      e.target == window.impressiveCanvas.containerElement
+      // e.target == window.impressiveCanvas.element || 
+      // e.target == window.impressiveCanvas.containerElement
+      ! e.target.classList.contains("impressiveContainer")
     ) {
       window.layout.eventHub.emit(
         "selectElement",
@@ -127,29 +143,35 @@ export class SelectTool extends Tool{
       return;
     }
 
+    let newElement = this.constructElement( e.target );
 
     // if I select twice the same object, don't do anything
     if (
-      this.selected.indexOf(e.target) != -1  // or the active element
+      this.selected.indexOf(newElement) != -1  // or the active element
     )
       return
 
 
+    let idx = this.selected.indexOf(newElement);
+    // if im pressing shift 
+    if( this.keyboard.shift){
+      // and the item was already selected 
+      if( idx != -1 )
+        // deselect it
+        shit.selected.splice(idx, 1);
+      // but if it's not already selected, put it in
+      else this.selected.push(newElement);
+    }
+    else if( ! this.keyboard.shift && 
+      this.selected.length <= 1 &&
+      idx != -1 ) { // if i'm not pressing shift, just select that one
+      this.selected = [];
+      this.selected.push(newElement);
+    }
+
     console.log(this.selected);
 
-    if(window.impressiveCanvas.keyboardHandling.alt){
-      this.selected.append(e.target);
-    }
-
-    this.selected = e.target;
-
-    let el = e.target.classList;
-    let selElement = new Container(e.target);
-    if( el.contains("impressiveImage") ){
-      selElement = new Image(e.target);
-    }else if(el.contains("impressiveText") ){
-      selElement = new Text(e.target);
-    }
+    let selElement = this.constructElement(e.target);
     window.layout.eventHub.emit(
       "selectElement", {element: selElement});
 

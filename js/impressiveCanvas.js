@@ -51,12 +51,31 @@ export class ImpressiveCanvas{
     this.mouseHandling = new ContainerTool(this, container.getElement(), this.element);
     this.keyboardHandling = new KeyboardManager(document);
 
+    // keyboard shortcut 
     let destroyElement = function(){
-	window.impressiveCanvas.selectedElement.destroy();
-	window.layout.eventHub.emit("selectElement", {element: null});
+      window.impressiveCanvas.selectedElement.destroy();
+      window.layout.eventHub.emit("selectElement", {element: []});
     }
     this.keyboardHandling.addAction("Delete", destroyElement, "ImpressiveCanvas")
     this.keyboardHandling.addAction("Backspace", destroyElement, "ImpressiveCanvas")
+    let duplicateElement = function(){
+      let sel = window.impressiveCanvas.selectedElement;
+      if(sel.constructor == Array) sel = sel[0];
+      let props = sel.getProperties();
+      let type = sel.constructor;
+      let x = props["x"];
+      let y = props["y"];
+      let newE = type.create(x+50, y+50);
+      for( const [p, value] of Object.entries(props) ){
+        newE.setProperty(p, value);
+      }
+      newE.setPosition(x+50, y+50);
+      window.layout.eventHub.emit(
+        "selectElement",
+        {element: [newE]}
+      );
+    }
+    this.keyboardHandling.addAction("d", duplicateElement, "ImpressiveCanvas")
 
     window.impressiveCanvas = this;
 
@@ -222,7 +241,7 @@ export class ImpressiveCanvas{
     container.setPosition(x+dx/scale, y+dy/scale);
   }
   setContainerSizeInteract(container, rect, deltaRect){
-    let scale = this.getScale();
+    let scale = this.getScale() * this.getVisualScale();
     console.log(rect);
     container.setSize(rect.width/scale, rect.height/scale);
     let [x,y] = container.getPosition();

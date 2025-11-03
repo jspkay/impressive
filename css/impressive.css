@@ -7,6 +7,10 @@ width: 100%;
 overflow: hidden;
 }
 
+#stepListWindow{
+  user-select: none;
+}
+
 #mainArea{
   width: 100%;
   height: 100%;
