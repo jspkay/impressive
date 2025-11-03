@@ -34,12 +34,18 @@ export class PropertiesWindow{
     }
     this.selected = e.element;
 
-    if(e.element == null){
-	return;	
+    if(e.element.length == 0){
+      return;	
+    } else {
+      console.log("WARNING!!! Multi selection is not implemented yet!!!");
     }
 
     // this.selected.createHandles();
 
+    if(e.element.constructor == Array){
+      e.element = e.element[0];
+      this.selected = e.element;
+    }
 
     let list = e.element.getProperties();
     let types = e.element.getPropertiesList();

@@ -12,6 +12,7 @@ div.lm_content:has( #impressiveCanvas ){
   top: 50%;
   left: 50%;
   transform-origin: top left;
+  user-select: none;
 }
 
 #origin{

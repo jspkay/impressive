@@ -44,7 +44,7 @@ export function makeFieldNumber(prop, value, triggerEvent, smallest=false, delta
 
   root.innerHTML = `
 <span class="input-group-text" >${prop}</span>
-<input type="number" step="0.01" placeholder="${prop}" class="form-control" >
+<input type="number" step="1" placeholder="${prop}" class="form-control" >
 
 <div class="btn-regulators">
   <button class="btn-value-minus btn btn-outline-secondary" type="button" >-</button>
