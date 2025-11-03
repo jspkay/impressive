@@ -1,4 +1,4 @@
-export function makeField(prop, value){
+export function makeField(prop, value, triggerEvent){
   let root = document.createElement("div");
   root.classList.add("input-group", "mb-3");
 
@@ -10,29 +10,35 @@ export function makeField(prop, value){
   let input = root.querySelector("input");
   input.value = value;
   input.addEventListener("change", (e)=>{
-    window.layout.eventHub.emit("propertyChanged", {[prop]: e.target.value});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: e.target.value});
   });
 
   return root;
 }
-export function makeFieldBool(prop, value){
+export function makeFieldBool(prop, value, triggerEvent){
   let root = document.createElement("div");
   root.classList.add("input-group", "mb-3");
 
   root.innerHTML = `
+<div class="form-check">
 <span class="input-form-check-label" for=${prop} >${prop}</span>
 <input type="checkbox" class="form-check-input" id=${prop} >
+</div>
 `
+
+  if(triggerEvent == undefined)
+    triggerEvent = "propertyChanged";
 
   let input = root.querySelector("input");
   input.value = value;
+  input.checked = value;
   input.addEventListener("change", (e)=>{
-    window.layout.eventHub.emit("propertyChanged", {[prop]: e.target.checked});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: e.target.checked});
   });
 
   return root;
 }
-export function makeFieldNumber(prop, value, alwaysPositive=false, delta=null){
+export function makeFieldNumber(prop, value, triggerEvent, smallest=false, delta=null){
   let root = document.createElement("div");
   root.classList.add("input-group", "mb-3");
 
@@ -46,36 +52,47 @@ export function makeFieldNumber(prop, value, alwaysPositive=false, delta=null){
 </div>
 `
 
+  if(triggerEvent == undefined){
+      triggerEvent = "propertyChanged";
+  }
 
   let input = root.querySelector("input");
   input.value = value;
   input.addEventListener("change", (e)=>{
-    window.layout.eventHub.emit("propertyChanged", {[prop]: e.target.value});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: e.target.value});
   });
+
+  let alwaysPositive;
+  if(smallest.constructor === Boolean){
+    alwaysPositive = smallest;
+    smallest = 1;
+  }else{
+    alwaysPositive = true;
+  }
 
   let addDeltaAlwaysPositive = function(e){
       e.preventDefault();
       input.value = Number(input.value) + (delta==null ? e.deltaY : Math.sign(e.deltaY) * delta);
-      if(input.value < 1){ input.value = 1; }
-      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+      if(input.value < smallest){ input.value = smallest; }
+      window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   }
   let removeOneAlwaysPositive = function(e){
     input.value = Number(input.value) - 1;
-    if(input.value < 1){ input.value = 1; }
-    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    if(input.value < smallest){ input.value = smallest; }
+    window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   };
   let addDelta = function(e){
       e.preventDefault();
       input.value = Number(input.value) + (delta==null ? e.deltaY : Math.sign(e.deltaY) * delta);
-      window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+      window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   }
   let removeOne = function(e){
     input.value = Number(input.value) - 1;
-    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   };
   let addOne = function(e){
     input.value = Number(input.value) + 1;
-    window.layout.eventHub.emit("propertyChanged", {[prop]: input.value});
+    window.layout.eventHub.emit(triggerEvent, {[prop]: input.value});
   };
 
   // create the event listenere for the plus button 

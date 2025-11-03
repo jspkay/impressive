@@ -225,8 +225,8 @@ export class Container extends Element{
       super.getProperties(), 
       {
         zindex: this.getZIndex(),
-	height: Number( element.style.height.replace("px", "") ),
 	width: Number( element.style.width.replace("px", "") ),
+	height: Number( element.style.height.replace("px", "") ),
 	fillColor: element.style.backgroundColor,
 	borderColor: element.style.borderColor,
 	borderThickness: element.style.borderThickness,

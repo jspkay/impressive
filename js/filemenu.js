@@ -92,6 +92,14 @@ function initWindows(element){
 	  componentName: 'SettingsWindow',
 	  title: "Settings",
 	}
+	break;
+      case "Canvas":
+	config = {
+	  type: 'component',
+	  componentName: 'CanvasPositionWindow',
+	  title: "Canvas",
+	}
+	break;
       default:
 	break;
     };

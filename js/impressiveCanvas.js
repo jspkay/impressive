@@ -6,12 +6,26 @@ export class ImpressiveCanvas{
     // take the root 
     window.impressive.canvas = this;
     this.containerElement = container.getElement();
+    this.containerElement.style.overflow = "hidden";
     this.containerElement.addEventListener("mouseenter", (e) => {impressive.focus = "ImpressiveCanvas"});
+
+    // this element is created for setting up the scale properly when the canvas
+    // window is not big enough. It ensure that all the elements ar properly
+    // visible always
+    this.scaleElement = document.createElement("div");
+    this.scaleElement.setAttribute("id", "impressiveCanvasRealSize");
+    this.scaleElement.style.width = "100%";
+    this.scaleElement.style.height = "100%";
+    this.scaleElement.style.scale = "1";
+    this.scaleElement.style.transition = "1s scale ease-in-out";
+    this.containerElement.appendChild(this.scaleElement);
 
       // create the canvas
     this.element = document.createElement("div");
     this.element.setAttribute("id", "impressiveCanvas");
-    this.containerElement.append(this.element);
+    this.element.dataset.width = 1920;
+    this.element.dataset.height = 1080;
+    this.scaleElement.append(this.element);
     
     // create an origin for reference
     this.origin = document.createElement("div");
@@ -47,19 +61,33 @@ export class ImpressiveCanvas{
     window.impressiveCanvas = this;
 
     // Events management
-    container.layoutManager.eventHub.on("toolChanged", this.changeTool.bind(this));
-    container.layoutManager.eventHub.on("selectElement", function (e){
+    let eventHub = container.layoutManager.eventHub;
+    eventHub.on("toolChanged", this.changeTool.bind(this));
+    eventHub.on("selectElement", function (e){
       this.selectedElement = e.element;
     }.bind(this));
-    container.layoutManager.eventHub.on("toggleCenterGrid",
-    (e) => {
-      for(let el of document.querySelectorAll(".impressiveCenterGrid"))
-	el.classList.toggle("hidden");
-    });
-
+    eventHub.on("moveCanvas", this.moveCanvas.bind(this));
   }
   replaceContents(content){
     this.element.innerHTML = content;
+  }
+  moveCanvas(e){
+    for( let movement in e ){
+      let value = e[movement];
+      let [x, y] = this.getPosition();
+      switch( movement ){
+	case "x":
+	  this.setPosition(value, y);
+	  break;
+	case "y":
+	  this.setPosition(x, value);
+	  break;
+	case "scale":
+	  this.setScale(value);
+	  break;
+      }
+    }
+
   }
   changeTool(event){
     this.mouseHandling.destroy();
@@ -89,6 +117,9 @@ export class ImpressiveCanvas{
         };
         break;
     }
+  }
+  setRealScale(s){
+    this.scaleElement.style.scale = String(s);
   }
   move(x, y, scale){
     let str = `translate(${x}px,${y}px) scale(${scale})`;
@@ -122,6 +153,9 @@ export class ImpressiveCanvas{
     this.element.style.scale = String(s);
     this.origin.style.scale = String(1/s);
     return res;
+  }
+  getVisualScale(){
+    return Number(this.scaleElement.style.scale);
   }
   getScale(){
     return Number(this.element.style.scale);
@@ -160,7 +194,7 @@ export class ImpressiveCanvas{
      *    than the original. The extra contour width/scale - width 
      *    is equally spaced to the right and left, thus we divide by 2.
      * */
-    let scale = this.getScale();
+    let scale = this.getScale() * this.getVisualScale();
     // static offest (due to the fact that the canvSe is positioned with top:50%
     // and width: 50%)
     let offStatX = this.element.offsetWidth / 2; 
