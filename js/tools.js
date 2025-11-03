@@ -112,21 +112,33 @@ export class ContainerTool extends Tool{
 
 export class SelectTool extends Tool{
   mouseDown(e){
-    console.log(e)
     if(
       // stop if im selecting the canvas itself
       e.target == window.impressiveCanvas.element || 
       e.target == window.impressiveCanvas.containerElement
     ) {
       window.layout.eventHub.emit(
-	"selectElement", {element: null});
-      this.selected = null;
+        "selectElement",
+        {element: []}
+      );
+      this.selected = [];
       return;
     }
+
+
+    // if I select twice the same object, don't do anything
     if (
-      this.selected === e.target  // or the active element
+      this.selected.indexOf(e.target) != -1  // or the active element
     )
       return
+
+
+    console.log(this.selected);
+
+    if(window.impressiveCanvas.keyboardHandling.alt){
+      this.selected.append(e.target);
+    }
+
     this.selected = e.target;
 
     let el = e.target.classList;

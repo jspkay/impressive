@@ -33,7 +33,7 @@ export class PropertiesWindow{
     }
     this.selected = e.element;
 
-    if(e.element == null){
+    if(e.element.length == 0){
 	return;	
     }
 
