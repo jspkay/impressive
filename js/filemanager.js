@@ -40,7 +40,16 @@ export function download(){
     let wrap = `
 <!doctype html>
 <html>
-  <head> </head>
+  <head>
+  <style>
+  .future{
+    opacity: 0;
+  }
+  #impressiveCanvas *{
+    transition: 0.4s all linear;
+  }
+  </style>
+  </head>
   <body style="margin: 0">
     <div id="impress" 
       data-width="${W}"

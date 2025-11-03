@@ -35,12 +35,16 @@ export class Element{
   }
   getPropertiesList(){
     return {
+      animationClass: "string",
       x: "number",
       y: "number",
     }
   }
   setProperty(prop, value){
     switch(prop){
+      case "animationClass":
+	this.setAnimationClass(value);
+	break;
       case "x":
 	let y = this.getPosition()[1];
 	this.setPosition(value, y);
@@ -54,11 +58,19 @@ export class Element{
 	break;
     }
   }
+  setAnimationClass(value){
+    this.element.classList.add(value);
+    this.element.dataset.animationClass = value;
+  }
   getProperties(){
     return {
+      animationClass: this.getAnimationClass(),
       x: this.x,
       y: this.y,
     }
+  }
+  getAnimationClass(){
+    return this.element.dataset.animationClass;
   }
   getX(){
     return Number(this.element.dataset.x);
