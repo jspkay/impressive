@@ -16,6 +16,8 @@ export function download(){
     // remove the add button
     let steps = document.querySelector("#StepListWindow").cloneNode(true);
     steps.children[ steps.children.length - 1 ].remove();
+    steps.style.visibility = "hidden";
+    steps.style.display = "none";
 
     // we set the scale as the current scale
     let W = document.querySelector("#impressiveCanvas").dataset.width,
@@ -39,7 +41,7 @@ export function download(){
 <!doctype html>
 <html>
   <head> </head>
-  <body>
+  <body style="margin: 0">
     <div id="impress" 
       data-width="${W}"
       data-height="${H}"
