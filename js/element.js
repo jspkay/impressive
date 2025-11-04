@@ -101,6 +101,66 @@ export class Element{
     this.y = y;
   }
 }
+export class Group{
+  constructor(){
+    this.container = null;
+    this.elements = [];
+  }
+  select(elementList){
+    this.elements = elementList; 
+    let xmin=null,
+      xmax=null,
+      ymin=null,
+      ymax=null;
+    for (let el of this.elements){
+      let props = el.getProperties();
+      let x = props["x"], y = props["y"];
+      let w = props["width"], h = props["height"];
+      if(xmax==null || x+w > xmax) xmax = x+w;
+      if(ymax==null || y+h > ymax) ymax = y+h;
+      if(xmin==null || x < xmin) xmin = x;
+      if(ymin==null || y < ymin) ymin = y;
+    }
+    this.groupContainer = Container.create(
+      xmin || 0, ymin || 0
+    )
+    let w = xmax - xmin;
+    let h = ymax - ymin;
+    let M = 1 / window.impressiveCanvas.getScale();
+    this.groupContainer.setSize(w || 0 , h || 0);
+    this.groupContainer.setFillColor("rgba(0, 0, 0, 0)");
+    this.groupContainer.setBorderColor("black");
+    this.groupContainer.setBorderStyle("dotted");
+    this.groupContainer.setBorderThickness(M);
+  }
+  clear(){
+    this.elements = [];
+    if(this.groupContainer != null)
+      this.groupContainer.destroy();
+  }
+  setpositionDx(dx){
+    for(let element of this.elements){
+      let props = element.getproperties();
+      element.setproperty("x", props[x]+dx);
+    }
+  }
+  setpositionDy(dy){
+    for(let element of this.elements){
+      let props = element.getproperties();
+      element.setproperty("y", props[y]+dy);
+    }
+  }
+  setPositionX(newX){
+    let oldX = this.groupContainer.getProperties()["x"];
+    this.groupContainer.setProperty("x", newX); 
+    for(let element of this.elements){
+      let x = element.getProperties()["x"];
+      let dx = x - oldX;
+      element.setProperty("x", newX+dx);
+    }
+
+  }
+}
 
 // The class container is similar to inkscape Rectangles. 
 // In short, it makes an element which works as a container, 
@@ -257,6 +317,12 @@ export class Container extends Element{
   }
   getWidth(){
     return Number( this.element.style.width.replace("px", "") );
+  }
+  getBorderStyle(){
+    return this.element.style.borderStyle;
+  }
+  setBorderStyle(style){
+    this.element.style.borderStyle = style;
   }
   finish(){
     if( this.tooSmall )

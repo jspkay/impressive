@@ -1,5 +1,5 @@
 import {Mouse} from "./mouse.js";
-import {Container, Image, Text} from "./element.js";
+import {Group, Container, Image, Text} from "./element.js";
 
 class Tool{
   constructor(canvas, trigger, element){
@@ -116,6 +116,8 @@ export class SelectTool extends Tool{
     super(canvas, trigger, element);
     this.selected = [];
     this.keyboard = window.impressiveCanvas.keyboardHandling;
+    this.selectionGroup = new Group();
+    window.impressive.selection = this.selectionGroup;
   }
   constructElement(target){
     let el = target.classList;
@@ -128,6 +130,8 @@ export class SelectTool extends Tool{
     return selElement;
   }
   mouseDown(e){
+
+    this.selectionGroup.clear();
     if(
       // stop if im selecting the canvas itself
       // and show the properties, for easy access
@@ -144,13 +148,6 @@ export class SelectTool extends Tool{
     }
 
     let newElement = this.constructElement( e.target );
-
-    // if I select twice the same object, don't do anything
-    if (
-      this.selected.indexOf(newElement) != -1  // or the active element
-    )
-      return
-
 
     let idx = this.selected.indexOf(newElement);
     // if im pressing shift 
@@ -169,6 +166,7 @@ export class SelectTool extends Tool{
       this.selected.push(newElement);
     }
 
+    this.selectionGroup.select(this.selected);
     console.log(this.selected);
 
     let selElement = this.constructElement(e.target);
