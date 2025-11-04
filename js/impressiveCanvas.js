@@ -238,7 +238,12 @@ export class ImpressiveCanvas{
   }
   canvasCoordinateToFather(x, y, father){
     let el = new Container(father.element);
-    let [fx, fy] = father.getPosition();
+    if(father.element == this.element)
+      return [x, y];
+
+    let props = father.getProperties();
+    let fx = props["x"];
+    let fy = props["y"];
     return [x-fx, y-fy];
   }
   // All the other methods are needed to interact with the elements 
