@@ -65,8 +65,8 @@ export class Element{
   getProperties(){
     return {
       animationClass: this.getAnimationClass(),
-      x: this.x,
-      y: this.y,
+      x: this.getX(),
+      y: this.getY(),
     }
   }
   getAnimationClass(){
