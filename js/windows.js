@@ -5,6 +5,8 @@ import {makeField, makeFieldBool, makeFieldNumber, makeFieldTextArea, makeContex
 import {StepManager} from "./stepmanager.js";
 import {Alignment} from "./alignment.js";
 import {Settings} from "./settings.js";
+import {constructElement} from "./utils.js";
+import {Container} from "./element.js";
 
 export class PropertiesWindow{
   constructor(container, state){
@@ -188,7 +190,40 @@ export class StepListWindow{
     }
   }
 }
+export class FatherWindow{
+    constructor(container, state){
+      window.impressive.father = new Container(window.impressiveCanvas.element);
+      let containerElement = container.getElement();
+      containerElement.innerHTML = `
+<button type="button" class="btn btn-primary" id="updateFather">Father is selected</button>
+<button type="button" class="btn btn-primary" id="resetFather">Reset</button>
+      `
 
+
+    window.layout.eventHub.on("selectElement", this.updateSelected.bind(this));
+    containerElement.querySelector("#updateFather").addEventListener(
+      "click",
+      this.updateFather.bind(this)
+    );
+    containerElement.querySelector("#resetFather").addEventListener(
+      "click",
+      (e) => {
+        window.impressive.father = new Container(window.impressiveCanvas.element);
+      }
+    );
+    }
+    updateSelected(e){
+      this.selected = e.element;
+    }
+    updateFather(e){
+       if(this.selected.constructor != Container){
+        alert("You must select a Container item!!!")
+        return;
+      }
+
+      window.impressive.father = this.selected;
+    }
+}
 export class ElementAnimationWindow{
     constructor(container, state){
 

@@ -23,3 +23,20 @@ export var pfx = (function pfx(){
 	return memory[ prop ];
     };
 })();
+
+export function constructElement(target){
+  let el = target.classList;
+  let selElement = null;
+  if(target == undefined) return selElement;
+
+
+  if( el.contains("impressiveContainer") ){
+    selElement = new Container(target);
+  }
+  else if( el.contains("impressiveImage") ){
+    selElement = new Image(target);
+  }else if(el.contains("impressiveText") ){
+    selElement = new Text(target);
+  }
+  return selElement;
+}

@@ -78,10 +78,12 @@ export class ContainerTool extends Tool{
       this.mouse.clickStarted.x,
       this.mouse.clickStarted.y 
     );
+    [x, y] = this.canvas.canvasCoordinateToFather(x, y, window.impressive.father);
     this.newElement = Container.create(
       x,
       y,
       this.element.getAttribute("id"),
+      window.impressive.father
     );
     this.newElement.tooSmall = true;
   }
@@ -92,6 +94,7 @@ export class ContainerTool extends Tool{
 	this.mouse.currentCoord.x,
 	this.mouse.currentCoord.y 
       );
+    [x, y] = this.canvas.canvasCoordinateToFather(x, y, window.impressive.father);
       this.newElement.setSizeFromPos(
 	x,
 	y,
@@ -249,9 +252,11 @@ export class ImageTool extends Tool{
       this.mouse.clickStarted.x, 
       this.mouse.clickStarted.y 
     );
+    [x, y] = this.canvas.canvasCoordinateToFather(x, y, window.impressive.father);
     this.newElement = Image.create(
       x, y,
-      this.element.getAttribute("id")
+      this.element.getAttribute("id"),
+      window.impressive.father
     );
   }
   mouseUp(e){
@@ -273,9 +278,11 @@ export class TextTool extends Tool{
       this.mouse.clickStarted.x, 
       this.mouse.clickStarted.y 
     );
+    [x, y] = this.canvas.canvasCoordinateToFather(x, y, window.impressive.father);
     this.newElement = Text.create(
       x,
       y,
+      window.impressive.father,
     );
     this.newElement.tooSmall = true;
   }
@@ -286,6 +293,7 @@ export class TextTool extends Tool{
 	this.mouse.currentCoord.x,
 	this.mouse.currentCoord.y 
       );
+    [x, y] = this.canvas.canvasCoordinateToFather(x, y, window.impressive.father);
       this.newElement.setSizeFromPos(
 	x,
 	y,

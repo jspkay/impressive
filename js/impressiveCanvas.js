@@ -1,5 +1,6 @@
 import {PanAndZoomTool, ContainerTool, SelectTool, ImageTool, TextTool} from "./tools.js";
 import {KeyboardManager} from "./keyboard.js";
+import {Container} from "./element.js";
 
 export class ImpressiveCanvas{
   constructor(container, componentState){
@@ -231,6 +232,11 @@ export class ImpressiveCanvas{
       x / scale - offX - offStatX - disX,
       y / scale - offY - offStatY - disY,
     ]
+  }
+  canvasCoordinateToFather(x, y, father){
+    let el = new Container(father.element);
+    let [fx, fy] = father.getPosition();
+    return [x-fx, y-fy];
   }
   // All the other methods are needed to interact with the elements 
   // The methods are needed here since this object has all the knowledge

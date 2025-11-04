@@ -1,5 +1,5 @@
 import {download, upload} from "./filemanager.js"
-import {uploadImage} from "./images.js";
+// import {uploadImage} from "./images.js";
 
 export function init() {
   let buttons = document.querySelectorAll("button.item");

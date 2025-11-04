@@ -15,6 +15,7 @@ import {
   AlignmentWindow,
   SettingsWindow,
   CanvasPositionWindow,
+  FatherWindow
 } from "./windows.js";
 import {Settings} from "./settings.js";
 
@@ -85,10 +86,16 @@ function init() {
 		  type: 'component',
 		  componentName: 'AlignmentWindow',
 		  title: "Alignment",
-		},{
+		},
+    {
 		  type: 'component',
 		  componentName: 'ElementAnimationWindow',
 		  title: "Element Animation",
+		},
+    {
+		  type: 'component',
+		  componentName: 'FatherWindow',
+		  title: "Father Selection",
 		}
 	      ], // lateral stack
 	    }
@@ -121,6 +128,8 @@ function init() {
   myLayout.registerComponentConstructor("AlignmentWindow", AlignmentWindow);
   myLayout.registerComponentConstructor("SettingsWindow", SettingsWindow);
   myLayout.registerComponentConstructor("CanvasPositionWindow", CanvasPositionWindow);
+  myLayout.registerComponentConstructor("FatherWindow", FatherWindow);
+
 
   myLayout.init();
 

@@ -317,7 +317,7 @@ export class Image extends Container{
   constructor(element){
     super(element);
   }
-  static create(x, y, rootId){
+  static create(x, y, rootId, father){
     this.rootId = rootId;
     let element = document.createElement("div"); // creating container
     element.classList.add("impressiveImage", "impressiveContainer"); // appropriate style
@@ -326,7 +326,10 @@ export class Image extends Container{
     element.dataset.y = y;
     element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
     element.style.backgroundSize  = "contain";
-    document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
+    if(father == null){
+    father = document.querySelector(`#${rootId}`)
+    }
+    father.appendChild(element); // put it on the display
 
     let res = new Image(element);
     res.setFillColor("blue");
@@ -403,7 +406,7 @@ export class Image extends Container{
 }
 
 export class Text extends Container{
-  static create(x, y){
+  static create(x, y, father){
     let rootId = this.rootId = "impressiveCanvas";
     let element = document.createElement("div"); // creating container
     element.classList.add("impressiveText", "impressiveContainer"); // appropriate style
@@ -413,7 +416,10 @@ export class Text extends Container{
     element.style.transform = `translate(${x}px, ${y}px)`; // position the element on display
     element.style.whiteSpace = "pre-line";
     element.style.fontSize  = "10pt";
-    document.querySelector(`#${rootId}`).appendChild(element); // put it on the display
+    if(father == null){
+      father = document.querySelector(`#${rootId}`)
+    }
+    father.appendChild(element); // put it on the display
 
 
     let M = 3 / window.impressiveCanvas.getScale();
