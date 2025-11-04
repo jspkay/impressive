@@ -54,8 +54,11 @@ export class ImpressiveCanvas{
 
     // keyboard shortcut 
     let destroyElement = function(){
-      window.impressiveCanvas.selectedElement.destroy();
-      window.layout.eventHub.emit("selectElement", {element: []});
+      let del = confirm("Delete selected element?");
+      if(del){
+        window.impressiveCanvas.selectedElement.destroy();
+        window.layout.eventHub.emit("selectElement", {element: []});
+      }
     }
     this.keyboardHandling.addAction("Delete", destroyElement, "ImpressiveCanvas")
     this.keyboardHandling.addAction("Backspace", destroyElement, "ImpressiveCanvas")
