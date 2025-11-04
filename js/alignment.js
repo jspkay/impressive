@@ -1,4 +1,4 @@
-import {Element} from "./element.js"
+import {Element, Container} from "./element.js"
 import {Settings, updateScreenBorders} from "./settings.js"
 
 export class Alignment{
@@ -27,10 +27,15 @@ export class Alignment{
   static alignCenter(e){
     let canvas = window.impressiveCanvas;
    let active = canvas.selectedElement;
+    console.log(active);
     console.log(active.getPosition());
     let [w, h] = canvas.getTriggerSize();
     let [sx, sy] = canvas.triggerCoordinateToCanvas(0, 0); // start coordinates
     let [ex, ey] = canvas.triggerCoordinateToCanvas(w,h); // end coordinates
+
+    let father = new Container(active.element.parentElement);
+    [sx, sy] = canvas.canvasCoordinateToFather(sx, sy, father);
+    [ex, ey] = canvas.canvasCoordinateToFather(ex, ey, father);
 
     let [x, y] = active.getPosition();
     [w, h] = active.getSize();
@@ -47,6 +52,10 @@ export class Alignment{
     let [sx, sy] = canvas.triggerCoordinateToCanvas(0, 0); // start coordinates
     let [w, h] = canvas.getTriggerSize();
     let [ex, ey] = canvas.triggerCoordinateToCanvas(w,h); // end coordinates
+
+    let father = new Container(active.element.parentElement);
+    [sx, sy] = canvas.canvasCoordinateToFather(sx, sy, father);
+    [ex, ey] = canvas.canvasCoordinateToFather(ex, ey, father);
 
     let [x, y] = active.getPosition();
     [w, h] = active.getSize();
@@ -68,6 +77,9 @@ export class Alignment{
     }
     let [sx, sy] = canvas.triggerCoordinateToCanvas(x0, y0); // start coordinates
 
+    let father = new Container(active.element.parentElement);
+    [sx, sy] = canvas.canvasCoordinateToFather(sx, sy, father);
+
     let [x, y] = active.getPosition();
 
     active.setPosition(sx, y);
@@ -88,6 +100,9 @@ export class Alignment{
     }
       
     let [ex, ey] = canvas.triggerCoordinateToCanvas(x0, y0); // end coordinates
+
+    let father = new Container(active.element.parentElement);
+    [ex, ey] = canvas.canvasCoordinateToFather(ex, ey, father);
 
     let [x, y] = active.getPosition();
     [w, h] = active.getSize();
@@ -112,6 +127,9 @@ export class Alignment{
 
     let [sx, sy] = canvas.triggerCoordinateToCanvas(x0, y0); // start coordinates
 
+    let father = new Container(active.element.parentElement);
+    [sx, sy] = canvas.canvasCoordinateToFather(sx, sy, father);
+
     let [x, y] = active.getPosition();
 
     active.setPosition(x, sy);
@@ -131,6 +149,9 @@ export class Alignment{
       if(type=="hor") y0=h-size;
     }
     let [ex, ey] = canvas.triggerCoordinateToCanvas(x0,y0); // end coordinates
+
+    let father = new Container(active.element.parentElement);
+    [ex, ey] = canvas.canvasCoordinateToFather(ex, ey, father);
 
     let [x, y] = active.getPosition();
     [w, h] = active.getSize();
