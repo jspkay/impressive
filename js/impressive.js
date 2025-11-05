@@ -91,8 +91,8 @@ function init() {
                     },
                     {
                       type: 'component',
-                      componentName: 'ElementAnimationWindow',
-                      title: "Element Animation",
+                      componentName: 'CanvasPositionWindow',
+                      title: "Canvas Position",
                     },
                   ]
                 },
