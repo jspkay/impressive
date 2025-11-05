@@ -89,11 +89,6 @@ function init() {
                       componentState: { label: 'Properties' },
                       title: "Properties",
                     },
-                    {
-                      type: 'component',
-                      componentName: 'CanvasPositionWindow',
-                      title: "Canvas Position",
-                    },
                   ]
                 },
                     {

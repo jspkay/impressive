@@ -317,7 +317,8 @@ export class Image extends Container{
   constructor(element){
     super(element);
   }
-  static create(x, y, rootId, father){
+  static create(x, y, father){
+    let rootId = "impressiveCanvas";
     this.rootId = rootId;
     let element = document.createElement("div"); // creating container
     element.classList.add("impressiveImage", "impressiveContainer"); // appropriate style

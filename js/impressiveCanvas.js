@@ -69,7 +69,11 @@ export class ImpressiveCanvas{
       let type = sel.constructor;
       let x = props["x"];
       let y = props["y"];
-      let newE = type.create(x+50, y+50);
+      let newE;
+      if(type == Container)
+        newE = type.create(x+50, y+50, null, window.impressive.father);
+      else 
+        newE = type.create(x+50, y+50, window.impressive.father);
       for( const [p, value] of Object.entries(props) ){
         newE.setProperty(p, value);
       }
