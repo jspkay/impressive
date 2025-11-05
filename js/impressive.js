@@ -57,59 +57,64 @@ function init() {
     },
     content: [
       {
-	type: "column",
-	content: [
-	  {
-	    type: 'row',
-	    content:[{
-	      type: 'component',
-	      componentName: 'StepListWindow',
-	      componentState: { label: 'Steps' },
-	      size: "10%",
-	      title: "Step list",
-	    },{
-	      type: 'component',
-	      componentName: 'ImpressiveCanvas',
-	      componentState: {activeTool: 'PanAndZoom'},
-	      size: "60%",
-	      isClosable: false,
-	    },{
-	      type: "stack",
-	      content: [
-		{
-		  type: 'component',
-		  componentName: 'PropertiesWindow',
-		  componentState: { label: 'Properties' },
-		  title: "Properties",
-		},
-		{
-		  type: 'component',
-		  componentName: 'AlignmentWindow',
-		  title: "Alignment",
-		},
-    {
-		  type: 'component',
-		  componentName: 'ElementAnimationWindow',
-		  title: "Element Animation",
-		},
-    {
-		  type: 'component',
-		  componentName: 'FatherWindow',
-		  title: "Father Selection",
-		}
-	      ], // lateral stack
-	    }
-	    ] // main row
-	  },{
-	    type: 'component',
-	    componentName: 'TransitionManagerWindow',
-	    title: "Transition Manager",
-	    size: "20%",
-	  }
-	], // main area and animation window
+        type: "column",
+        content: [
+          {
+            type: 'row',
+            content:[
+            {
+              type: 'component',
+              componentName: 'StepListWindow',
+              componentState: { label: 'Steps' },
+              size: "10%",
+              title: "Step list",
+            },
+            {
+              type: 'component',
+              componentName: 'ImpressiveCanvas',
+              componentState: {activeTool: 'PanAndZoom'},
+              size: "60%",
+              isClosable: false,
+            },
+            {
+              type: "column",
+              content: [
+                { 
+                  type: "stack",
+                  size: "90%",
+                  content: [
+                    {
+                      type: 'component',
+                      componentName: 'PropertiesWindow',
+                      componentState: { label: 'Properties' },
+                      title: "Properties",
+                    },
+                    {
+                      type: 'component',
+                      componentName: 'ElementAnimationWindow',
+                      title: "Element Animation",
+                    },
+                  ]
+                },
+                    {
+                      type: 'component',
+                      componentName: 'AlignmentWindow',
+                      title: "Alignment",
+                    },
+              ], // lateral stack
+            }
+          ] // main row
+          },
+          {
+            type: 'component',
+            componentName: 'FatherWindow',
+            title: "Father Window",
+            size: "13%",
+          }
+        ], // main area and animation window
       }
     ]
-      };
+  };
   document.querySelector("body").style.height = (window.innerHeight - document.querySelector("#menubar").offsetHeight)+"px";
 
   var myLayout = new GoldenLayout( config, document.querySelector("#mainArea") );
