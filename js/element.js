@@ -430,6 +430,7 @@ export class Text extends Container{
     res.setBorderColor("#000");
     res.setBorderThickness(3 * M);
     res.setBorderStyle("dashed");
+    res.setLineHeight( 20 );
 
     return res;
   }
@@ -519,6 +520,7 @@ export class Text extends Container{
   }
   setFontSize(value){
     this.setFontSizeStr(`${value}pt`);
+    this.setLineHeight(2*value);
   }
   setFontSizeStr(value){
     this.element.style.fontSize = value;
@@ -541,5 +543,11 @@ export class Text extends Container{
   }
   setAlignContent(value){
     this.element.style.alignContent = value;
+  }
+  getLineHeight(){
+    return window.getComputedStyle(this.element).lineHeight;
+  }
+  setLineHeight(value){
+    this.element.style.lineHeight = `${value}px`;
   }
 }
