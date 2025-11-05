@@ -255,7 +255,6 @@ export class ImageTool extends Tool{
     [x, y] = this.canvas.canvasCoordinateToFather(x, y, window.impressive.father);
     this.newElement = Image.create(
       x, y,
-      this.element.getAttribute("id"),
       window.impressive.father
     );
   }
