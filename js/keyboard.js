@@ -27,7 +27,8 @@ export class KeyboardManager{
       this.pressed = this.pressed.filter( i => i != e.key );
     }
 
-    this.processCombination();
+    if( !this.ctrl && !this.alt && !this.shift)
+      this.pressed = [];
   }
   processCombination(){
       console.log(this.pressed);
