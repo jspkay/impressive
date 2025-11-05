@@ -51,6 +51,40 @@ export function download(){
   </style>
   </head>
   <body style="margin: 0">
+
+  <div class="impress-progressbar"><div></div></div>
+  <div class="impress-progress"></div>
+
+    <style>
+    .impress-progressbar {
+      position: absolute;
+      right: 1em;
+      bottom: 1em;
+      left: 5em;
+      border-radius: 7px;
+      border: 2px solid rgba(100, 100, 100, 0.2);
+      height:0.7em;
+      z-index: 1000;
+    }
+    .impress-progressbar DIV {
+      width: 0;
+      height: 0.7em;
+      border-radius: 5px;
+      background: rgba(75, 75, 75, 0.4);
+      transition: width 250ms linear;
+    }
+    .impress-progress {
+      position: absolute;
+      left: 1em;
+      bottom: 1em;
+      text-align: left;
+      opacity: 0.6;
+      z-index: 1000;
+      align-content: end;
+    }
+    </style>
+
+
     <div id="impress" 
       data-width="${W}"
       data-height="${H}"
