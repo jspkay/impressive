@@ -59,6 +59,9 @@ export class Element{
     }
   }
   setAnimationClass(value){
+    let present = this.element.dataset.animationClass;
+    if( present != undefined)
+      this.element.classList.remove(present);
     this.element.classList.add(value);
     this.element.dataset.animationClass = value;
   }
