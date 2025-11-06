@@ -52,8 +52,8 @@ export class ImpressiveCanvas{
     this.mouseHandling = new ContainerTool(this, container.getElement(), this.element);
     this.keyboardHandling = new KeyboardManager(document);
 
-    // keyboard shortcut 
-    let destroyElement = function(){
+      // keyboard shortcuts
+      let destroyElement = function(){
       let del = confirm("Delete selected element?");
       if(del){
         window.impressiveCanvas.selectedElement.destroy();
@@ -78,6 +78,10 @@ export class ImpressiveCanvas{
         newE.setProperty(p, value);
       }
       newE.setPosition(x+50, y+50);
+      
+      // duplicate the contents
+      newE.element.innerHTML = sel.element.innerHTML;
+
       window.layout.eventHub.emit(
         "selectElement",
         {element: [newE]}

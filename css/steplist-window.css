@@ -1,3 +1,7 @@
+body{
+  counter-reset: step;
+}
+
 div#StepListWindow{
   overflow: scroll;
   background: cyan;
@@ -22,6 +26,10 @@ div.step{
   background: white;
   text-align: center;
   align-content: center;
+}
+div.step::before{
+  counter-increment: step;
+  content: counter(step) " - ";
 }
 
 div.sortable-ph{

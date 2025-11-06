@@ -48,6 +48,9 @@ export function download(){
   #impressiveCanvas *{
     transition: 0.4s all linear;
   }
+  .hide_past.past{
+    opacity: 0;
+  }
   </style>
   </head>
   <body style="margin: 0">

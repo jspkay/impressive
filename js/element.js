@@ -35,7 +35,7 @@ export class Element{
   }
   getPropertiesList(){
     return {
-      animationClass: "string",
+      animationClass: "longString",
       x: "number",
       y: "number",
     }
@@ -60,10 +60,15 @@ export class Element{
   }
   setAnimationClass(value){
     let present = this.element.dataset.animationClass;
-    if( present != undefined)
-      this.element.classList.remove(present);
-    this.element.classList.add(value);
+    if( present != undefined){
+      present = present.split("\n");
+      present = present.map( (s) => s.trim().replaceAll(" ", "_") );
+      this.element.classList.remove(...present);
+    }
     this.element.dataset.animationClass = value;
+    value = value.split("\n");
+    value = value.map( (s) => s.trim().replaceAll(" ", "_") );
+    this.element.classList.add(...value);
   }
   getProperties(){
     return {
@@ -252,7 +257,7 @@ export class Container extends Element{
     )
   }
   getBorderThickness(){
-    let res = this.element.style.borderThickness;
+    let res = this.element.style.borderWidth;
     return res == undefined ? 0 : Number( res.replace("px", "") );
   }
   getHeight(){
@@ -367,7 +372,7 @@ export class Image extends Container{
     return this.element.style.backgroundImage;
   }
   getRepeat(){
-    return this.element.style.backgroundRepeat == "repeat";
+    return window.getComputedStyle(this.element).backgroundRepeat == "repeat";
   }
   getPositionX(){
     return Number(this.element.style.backgroundPositionX.replace("px", ""));

@@ -197,6 +197,7 @@ export class FatherWindow{
       containerElement.innerHTML = `
 <button type="button" class="btn btn-primary" id="updateFather">Father is selected</button>
 <button type="button" class="btn btn-primary" id="resetFather">Reset</button>
+<button type="button" class="btn btn-primary" id="fatherOfActive">Select Father of Active</button>
       `
 
 
@@ -209,6 +210,15 @@ export class FatherWindow{
       "click",
       (e) => {
         window.impressive.father = new Container(window.impressiveCanvas.element);
+      }
+    );
+    containerElement.querySelector("#fatherOfActive").addEventListener(
+      "click",
+      (e) => {
+        let selected = window.impressiveCanvas.selectedElement;
+        window.impressive.father = new Container(
+          selected.element.parentElement
+        );
       }
     );
     }
