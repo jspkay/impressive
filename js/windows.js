@@ -181,9 +181,10 @@ export class StepListWindow{
         Rename: function(event){
           this.stepManager.renameStep(e.target);
         }.bind(this),
-        "Redefine Position...": function(event){
-          alert("not implemented yet");
-        },
+        "Redefine Position...":
+	function(event){
+	  this.stepManager.changePosition(e.target);
+        }.bind(this),
       });
       this.menu.style = `position: fixed; left: ${e.pageX}px; top: ${e.pageY}px`;
       document.body.appendChild(this.menu);
@@ -252,6 +253,15 @@ export class AlignmentWindow{
 <button id="impressiveAlignTop" type="button" class="btn btn-primary"> <i class="bi bi-align-top"></i></button>
 <button id="impressiveAlignMiddle" type="button" class="btn btn-primary"> <i class="bi bi-align-middle"></i></button>
 <button id="impressiveAlignBottom" type="button" class="btn btn-primary"> <i class="bi bi-align-bottom"></i></button>
+
+<br>
+
+<button id="impressiveAlignElementLeft" type="button"   class="btn btn-secondary"> <i class="bi bi-align-start"></i></button>
+<button id="impressiveAlignElementCenter" type="button" class="btn btn-secondary"> <i class="bi bi-align-center"></i></button>
+<button id="impressiveAlignElementRight" type="button"  class="btn btn-secondary"> <i class="bi bi-align-end"></i></button>
+<button id="impressiveAlignElementTop" type="button"    class="btn btn-secondary"> <i class="bi bi-align-top"></i></button>
+<button id="impressiveAlignElementMiddle" type="button" class="btn btn-secondary"> <i class="bi bi-align-middle"></i></button>
+<button id="impressiveAlignElementBottom" type="button" class="btn btn-secondary"> <i class="bi bi-align-bottom"></i></button>
 	`
 	container.getElement().innerHTML = basicStructure;
 	this.containerElement = container.getElement();

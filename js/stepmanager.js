@@ -110,9 +110,63 @@ export class StepManager{
       "id", newId
     );
   }
-  deleteStep(stepElement){
-    console.log(stepElement);
-    let index = this.findStepIndex(stepElement);
+  async changePosition(stepElement, newPos){
+    let form = makeForm({
+      "New Position:": {type: "text", id:"newPos"},
+    });
+    let modal = new Modal("New Position", form, "Change");
+    modal.show();
+
+    let value = await modal.takeResult( 
+      (e) => {
+        return form.querySelector("#newPos").value;
+      }
+    )
+    modal.dispose();
+
+    if(value.cancelled) return;
+
+    newPos = Number(value.value);
+    if( window.isNaN(newPos) ){
+      alert("write an actual number!!!");
+      return;
+    }
+
+    // we are dealing with humans, so wi start counting from 1.
+    // in which case, we need to subtract 1 from the current position, 
+    // to convert it into machine-compatible numbers.
+    // There is a catch: if we want to move the step later (that is,
+    // the currentPos < newPos), we need to take into account that currentPos 
+    // is not presently empty! So, in that case, we do not need to decrement
+    // newPos, since we will remove the element at currentPos.
+    let currentPos = this.findStepIndex(stepElement);
+    if(newPos < currentPos)
+      newPos--; 
+
+
+    // duplicate the step
+    let steps = document.querySelectorAll(".step");
+    let newStep = stepElement.cloneNode();
+    newStep.innerHTML = stepElement.innerHTML;
+
+    // insert in the DOM
+    if(newPos > steps.length){ 
+      alert(`Number not valid! There is only ${steps.length} steps!`);
+      return;
+    }
+    else if(newPos == steps.length){
+      // if we want it as the last, we insert it after the last
+      steps[newPos-1].insertAdjacentElement("afterend", newStep);
+    }
+    else{ // otherwise, we insert it before the selected, giving it its position
+      steps[newPos].insertAdjacentElement("beforebegin", newStep);
+    }
+
+    stepElement.remove();
+    }
+    deleteStep(stepElement){
+      console.log(stepElement);
+      let index = this.findStepIndex(stepElement);
     let steps = document.querySelectorAll(".step");
 
     stepElement.remove();
