@@ -75,7 +75,8 @@ export class ImpressiveCanvas{
       else 
         newE = type.create(x+50, y+50, window.impressive.father);
       for( const [p, value] of Object.entries(props) ){
-        newE.setProperty(p, value);
+	if( value != undefined )
+	  newE.setProperty(p, value);
       }
       newE.setPosition(x+50, y+50);
       
