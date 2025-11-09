@@ -41,6 +41,10 @@ export function download(){
 <!doctype html>
 <html>
   <head>
+
+  <!-- math equation rendering -->
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+
   <style>
   .future{
     opacity: 0;
