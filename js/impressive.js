@@ -81,7 +81,6 @@ function init() {
               content: [
                 { 
                   type: "stack",
-                  size: "90%",
                   content: [
                     {
                       type: 'component',
@@ -95,6 +94,7 @@ function init() {
                       type: 'component',
                       componentName: 'AlignmentWindow',
                       title: "Alignment",
+		    size: "20%",
                     },
               ], // lateral stack
             }
