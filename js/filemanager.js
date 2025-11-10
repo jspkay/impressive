@@ -42,6 +42,9 @@ export function download(){
 <html>
   <head>
 
+  <!-- Pretty code -->
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
   <!-- math equation rendering -->
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 
