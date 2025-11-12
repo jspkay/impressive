@@ -177,5 +177,6 @@ export class StepManager{
     for(let step of steps){
       step.remove();
     }
+    this.stepCount = 0;
   }
 }
