@@ -58,6 +58,9 @@ export function download(){
   .hide_past.past{
     opacity: 0;
   }
+  .no_border{
+    border: none !important;
+  }
   </style>
   </head>
   <body style="margin: 0">
