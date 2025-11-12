@@ -9,6 +9,30 @@
 
     <link rel="stylesheet" href="css/menubar.css" >
 
+    <!-- math equation rendering -->
+    <script>
+      window.MathJax = {
+	loader: {
+	  load: ["input/tex", "output/svg"]
+	},
+	svg:{
+	  blacker: 3,
+	},
+	startup:{
+	  pageReady: () => {
+	    console.log("Running MathJax");
+	    return MathJax.startup.defaultPageReady();
+	  }
+	},
+	options: {
+	  enableMenu: true,
+	  enableEnrichment: false,
+	}
+      }
+    </script>
+    <script id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@4/startup.js"></script>
+
     <!-- pretty code -->
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
