@@ -1,3 +1,11 @@
+# IMPORTANT NOTE
+
+The master branch is currently not used. 
+Instead, all the development is happening in `fatherShit`.
+
+> I know, creative name... There is a reason behind that, but let's not get into
+> it. Thank you for the attention
+
 # Impressive 
 ## Presentations from the Future
 
